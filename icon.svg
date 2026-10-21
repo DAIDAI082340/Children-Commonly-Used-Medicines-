@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1971c2"/>
+      <stop offset="100%" stop-color="#0c4a8a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)"/>
+  <circle cx="256" cy="256" r="190" fill="#ffffff" opacity="0.12"/>
+  <!-- Pill graphic -->
+  <g transform="translate(256,256) rotate(-45) translate(-256,-256)">
+    <!-- Pill half top (blue-accent) -->
+    <path d="M196,160 C196,126.86 222.86,100 256,100 C289.14,100 316,126.86 316,160 L316,256 L196,256 Z" fill="#e7f5ff"/>
+    <!-- Pill half bottom (coral-red) -->
+    <path d="M196,256 L316,256 L316,352 C316,385.14 289.14,412 256,412 C222.86,412 196,385.14 196,352 Z" fill="#ff6b6b"/>
+    <!-- Highlight shine -->
+    <path d="M216,150 C216,138 226,128 238,128 L238,240 L216,240 Z" fill="#ffffff" opacity="0.45"/>
+    <line x1="196" y1="256" x2="316" y2="256" stroke="#0c4a8a" stroke-width="6"/>
+  </g>
+  <!-- Medical Plus badge -->
+  <g transform="translate(340, 340)">
+    <circle cx="30" cy="30" r="45" fill="#12b886" stroke="#ffffff" stroke-width="6"/>
+    <path d="M30,12 L30,48 M12,30 L48,30" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+  </g>
+</svg>

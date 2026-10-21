@@ -1,0 +1,4820 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>兒童常用藥品簡表 - 目錄分類與精準檢索系統</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <style>
+    :root {
+      --primary: #1971c2;
+      --primary-dark: #0c4a8a;
+      --primary-light: #e7f5ff;
+      --accent: #0ca678;
+      --accent-light: #e6fcf5;
+      --danger: #e03131;
+      --danger-light: #fff5f5;
+      --warning: #f59f00;
+      --warning-light: #fff9db;
+      --border-color: #dee2e6;
+      --text-main: #212529;
+      --text-muted: #495057;
+      --bg-page: #f8f9fa;
+      --bg-card: #ffffff;
+      --radius: 8px;
+      --shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      width: 100%;
+      background-color: #ffffff;
+      overscroll-behavior: none;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      overflow-x: hidden;
+      overscroll-behavior: none;
+      background-color: var(--bg-page);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: max(60px, calc(env(safe-area-inset-bottom) + 30px));
+      -webkit-tap-highlight-color: transparent;
+      touch-action: pan-y;
+    }
+
+    /* 頂部固定列 (緊湊精簡版，適配手機 SafeArea) */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: white;
+      border-bottom: 2px solid var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: max(0.32rem, env(safe-area-inset-top)) max(0.65rem, env(safe-area-inset-right)) 0.35rem max(0.65rem, env(safe-area-inset-left));
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .header-title-box {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .header-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      letter-spacing: -0.2px;
+    }
+
+    /* 徹底屏蔽 Netlify 抽屜工具列與所有相關浮水印 */
+    #netlify-drawer,
+    .netlify-drawer,
+    netlify-drawer,
+    [data-netlify-drawer],
+    [data-testid="drawer"],
+    #netlify-badge,
+    .netlify-badge,
+    iframe[src*="netlify"],
+    iframe[src*="_drawer"],
+    div[class*="netlify-drawer"],
+    div[id*="netlify-drawer"] {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .header-tag {
+      background: #e7f5ff;
+      color: var(--primary);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid #a5d8ff;
+    }
+
+    .author-note {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    /* 控制面板：下拉選單 + 搜尋輸入框 + 清空按鈕 + 跳轉按鈕 (緊湊版) */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 210px 1fr auto;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    @media (max-width: 820px) {
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .select-wrap select {
+      width: 100%;
+      padding: 0.32rem 0.55rem;
+      height: 32px;
+      font-size: 0.84rem;
+      border: 1.5px solid #ced4da;
+      border-radius: 6px;
+      background-color: #f8fafc;
+      color: var(--text-main);
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .select-wrap select:focus {
+      border-color: var(--primary);
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(25, 113, 194, 0.15);
+    }
+
+    .search-control-group {
+      display: flex;
+      gap: 0.35rem;
+      align-items: center;
+      position: relative;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 0.32rem 2rem 0.32rem 0.65rem;
+      height: 32px;
+      font-size: 0.84rem;
+      border: 1.5px solid #ced4da;
+      border-radius: 6px;
+      outline: none;
+      background: #f8fafc;
+      transition: all 0.15s;
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--primary);
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(25, 113, 194, 0.15);
+    }
+
+    .clear-search-btn {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 1rem;
+      color: #868e96;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* 獨立實體「清空」按鈕 */
+    .solid-clear-btn {
+      background: var(--primary);
+      color: white;
+      border: 1px solid var(--primary-dark);
+      padding: 0.3rem 0.65rem;
+      height: 32px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .solid-clear-btn:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 2px 5px rgba(12, 74, 138, 0.25);
+    }
+
+    /* 搜尋項目跳轉按鈕群組 */
+    .jump-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      background: #f1f3f5;
+      padding: 0.1rem 0.25rem;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid #ced4da;
+    }
+
+    .jump-btn {
+      background: white;
+      border: 1px solid #adb5bd;
+      border-radius: 4px;
+      padding: 0.18rem 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
+    .jump-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .jump-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .jump-counter {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      padding: 0 0.35rem;
+      white-space: nowrap;
+      min-width: 45px;
+      text-align: center;
+    }
+
+    .result-badge {
+      font-size: 0.84rem;
+      color: var(--primary-dark);
+      font-weight: 600;
+      white-space: nowrap;
+      background: #e7f5ff;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #a5d8ff;
+      text-align: center;
+    }
+
+    /* 容器 */
+    .container {
+      max-width: 1200px;
+      margin: 1.25rem auto;
+      padding: 0 1rem;
+    }
+
+    /* 原書說明橫幅 (P1 原文零增減) */
+    .origin-banner {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .origin-banner-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* 嚴格對齊的列表結構 (懸掛縮排 Hanging Indent) */
+    .bullet-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem;
+      margin-bottom: 0.35rem;
+      line-height: 1.55;
+    }
+
+    .bullet-icon {
+      color: var(--primary);
+      font-size: 0.82rem;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .bullet-icon-arrow {
+      color: #0c8599;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .bullet-icon-sub {
+      color: #495057;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .bullet-text {
+      flex: 1;
+      text-align: justify;
+    }
+
+    .bullet-sublist {
+      margin-left: 1.35rem;
+      margin-top: 0.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .origin-history {
+      margin-top: 0.6rem;
+      padding-top: 0.6rem;
+      border-top: 1px dashed var(--border-color);
+      font-size: 0.82rem;
+      color: #495057;
+      line-height: 1.6;
+      text-align: justify;
+    }
+
+    /* 分類大區塊 (依目錄分類) */
+    .category-section {
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 140px;
+    }
+
+    .category-title-bar {
+      background: #e7f5ff;
+      border-left: 4px solid var(--primary);
+      padding: 0.28rem 0.65rem;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.55rem;
+      border: 1px solid #d0ebff;
+      border-left-width: 4px;
+    }
+
+    .category-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .category-page-tag {
+      background: white;
+      color: var(--primary);
+      border: 1px solid #a5d8ff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    /* 現代卡片格網 */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    .item-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.2s;
+      scroll-margin-top: 140px;
+    }
+
+    .item-card:hover {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      border-color: #adb5bd;
+    }
+
+    /* 當前搜尋焦點高亮動態光暈 */
+    .item-card.current-search-match {
+      border: 2px solid var(--primary) !important;
+      box-shadow: 0 0 0 4px rgba(25, 113, 194, 0.25), 0 4px 12px rgba(0,0,0,0.12) !important;
+      background: #fbfdff;
+      transform: translateY(-2px);
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+      border-bottom: 1px solid #f1f3f5;
+      padding-bottom: 0.4rem;
+    }
+
+    /* 依使用者指示：圖3粗字體學名在上面(主標)，商品名規格在下面(副標) */
+    .drug-name-primary {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: 0.2px;
+    }
+
+    .drug-name-secondary {
+      font-size: 0.88rem;
+      color: #3b5998;
+      font-weight: 600;
+      margin-top: 0.15rem;
+    }
+
+    .fee-badge {
+      background: #fff3bf;
+      color: #d9480f;
+      border: 1px solid #ffe066;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* 劑量標註框 */
+    .dose-formula-box {
+      background: #f8fafc;
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #092c4c;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .dose-formula-label {
+      font-size: 0.75rem;
+      color: #6c757d;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dose-formula-content {
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    /* 分數呈現 */
+    .fraction {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      padding: 0 0.15rem;
+      line-height: 1;
+      font-weight: 700;
+    }
+    .fraction .num {
+      border-bottom: 1.5px solid currentColor;
+      padding-bottom: 1px;
+    }
+    .fraction .den {
+      padding-top: 1px;
+    }
+
+    /* 原書備註與臨床說明框 (徹底解決折行不整齊問題) */
+    .card-note {
+      font-size: 0.85rem;
+      color: #343a40;
+      background: #fdfdfd;
+      padding: 0.5rem 0.65rem;
+      border-radius: 4px;
+      border: 1px dashed #dee2e6;
+      line-height: 1.5;
+    }
+
+    .boxed-guideline {
+      background: white;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      margin: 0.75rem 0;
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+
+    .boxed-guideline b { color: var(--primary-dark); }
+
+    /* 表格樣式 (保留原版完整表格) */
+    .clean-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.86rem;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .clean-table th, .clean-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .clean-table th {
+      background: #e7f5ff;
+      color: var(--primary-dark);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .clean-table tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .text-center { text-align: center !important; }
+
+    /* 搜尋高亮 */
+    mark.highlight {
+      background-color: #ffec99;
+      color: #000;
+      font-weight: 700;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    /* 隱藏未匹配區塊 */
+    .hidden-block {
+      display: none !important;
+    }
+
+    /* 回到頂部 */
+    .back-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 999;
+      opacity: 0.85;
+      transition: all 0.2s;
+    }
+
+    .back-top:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+
+    /* ============================================================ */
+    /* 深色護眼模式 (Dark Mode)                                      */
+    /* ============================================================ */
+    [data-theme="dark"] {
+      --primary: #4dabf7;
+      --primary-dark: #74c0fc;
+      --primary-light: #18283d;
+      --accent: #20c997;
+      --accent-light: #12382e;
+      --danger: #ff6b6b;
+      --danger-light: #3d1b1b;
+      --warning: #fcc419;
+      --warning-light: #3e3315;
+      --border-color: #373a40;
+      --text-main: #e9ecef;
+      --text-muted: #adb5bd;
+      --bg-page: #121620;
+      --bg-card: #1c2230;
+      --shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    [data-theme="dark"] header {
+      background: #171d2b;
+      border-bottom-color: #228be6;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    }
+
+    [data-theme="dark"] .header-tag {
+      background: #18283d;
+      color: #74c0fc;
+      border-color: #22517e;
+    }
+
+    [data-theme="dark"] .select-wrap select,
+    [data-theme="dark"] .search-wrap input {
+      background-color: #121622;
+      color: #f1f3f5;
+      border-color: #3d4659;
+    }
+
+    [data-theme="dark"] .select-wrap select:focus,
+    [data-theme="dark"] .search-wrap input:focus {
+      background-color: #192033;
+      border-color: #4dabf7;
+    }
+
+    [data-theme="dark"] .clean-table {
+      background: #1c2230;
+      border-color: #373a40;
+    }
+
+    [data-theme="dark"] .clean-table th {
+      background: #18283d;
+      color: #74c0fc;
+      border-color: #373a40;
+    }
+
+    [data-theme="dark"] .clean-table td {
+      border-color: #373a40;
+      color: #e9ecef;
+    }
+
+    [data-theme="dark"] .clean-table tr:hover {
+      background-color: #242c3d;
+    }
+
+    [data-theme="dark"] .boxed-guideline,
+    [data-theme="dark"] .card-note,
+    [data-theme="dark"] .dose-formula-box {
+      background: #151a26;
+      border-color: #2d3648;
+      color: #dee2e6;
+    }
+
+    [data-theme="dark"] .drug-name-primary {
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .drug-name-secondary {
+      color: #74c0fc;
+    }
+
+    [data-theme="dark"] .jump-btn-group {
+      background: #161b26;
+      border-color: #373a40;
+    }
+
+    [data-theme="dark"] .jump-btn {
+      background: #232b3b;
+      border-color: #444e63;
+      color: #dee2e6;
+    }
+
+    [data-theme="dark"] .item-card.current-search-match {
+      background: #18263d !important;
+    }
+
+    [data-theme="dark"] mark.highlight {
+      background-color: #f08c00;
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .origin-banner {
+      background: #182438;
+      border-color: #24416a;
+    }
+
+    /* 頂部操作按鈕 (深色模式/列印) */
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .tool-btn {
+      background: #e7f5ff;
+      border: 1px solid #a5d8ff;
+      color: var(--primary-dark);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: all 0.15s;
+    }
+
+    .tool-btn:hover {
+      background: #d0ebff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+
+    [data-theme="dark"] .tool-btn {
+      background: #1e283d;
+      border-color: #334d73;
+      color: #74c0fc;
+    }
+
+    [data-theme="dark"] .tool-btn:hover {
+      background: #273754;
+    }
+
+    /* ============================================================ */
+    /* 隱藏原則橫幅與 Page 標籤 (依使用者指示)                      */
+    /* ============================================================ */
+    #introBanner {
+      display: none !important;
+    }
+
+    .category-page-tag {
+      display: none !important;
+    }
+
+    /* ============================================================ */
+    /* 小兒體重即時計算機控制列 (方案 1: 全單排並排)                */
+    /* ============================================================ */
+    .weight-calc-bar {
+      background: #f1f8ff;
+      border: 1.5px solid #bcdbfb;
+      border-radius: 8px;
+      padding: 0.35rem 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    [data-theme="dark"] .weight-calc-bar {
+      background: #152132;
+      border-color: #253e5e;
+    }
+
+    .weight-calc-header {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+      width: 100%;
+    }
+
+    .weight-input-box {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .weight-shortcut-label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .weight-label {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+
+    .weight-input {
+      width: 56px;
+      height: 29px;
+      padding: 0.12rem 0.35rem;
+      border: 1.5px solid #90caf9;
+      border-radius: 5px;
+      font-size: 0.96rem;
+      font-weight: 800;
+      text-align: center;
+      outline: none;
+      background: white;
+      color: #111;
+      transition: all 0.15s;
+    }
+
+    [data-theme="dark"] .weight-input {
+      background: #111520;
+      color: #f1f3f5;
+      border-color: #3d5070;
+    }
+
+    .weight-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(25, 113, 194, 0.2);
+    }
+
+    .weight-unit-tag {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* 方案 1：全單排完整並排 (6k ~ 30k 全部在同一排均分展開，永不折行) */
+    .weight-chips {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      width: 100%;
+    }
+
+    .weight-chip {
+      flex: 1;
+      min-width: 0;
+      background: white;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      padding: 0.22rem 0;
+      text-align: center;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.1s, background 0.12s;
+    }
+
+    [data-theme="dark"] .weight-chip {
+      background: #1e2637;
+      border-color: #344158;
+      color: #adb5bd;
+    }
+
+    .weight-chip:hover, .weight-chip.active {
+      background: var(--primary);
+      border-color: var(--primary-dark);
+      color: white;
+    }
+
+    .weight-chip:active, .tool-btn:active, .solid-clear-btn:active {
+      transform: scale(0.94);
+    }
+
+    .weight-clear-btn {
+      background: none;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 0.15rem 0.38rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .weight-clear-btn:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+      color: var(--danger);
+      border-color: #ffa8a8;
+    }
+
+    /* 手機版與 App 響應式優化 (徹底鎖定 iOS 縮放與平移) */
+    @media (max-width: 600px) {
+      /* 防止 iOS 點擊輸入框時自動縮放 (字體必須 >= 16px) */
+      input, select, textarea, .search-wrap input, .weight-input, .select-wrap select {
+        font-size: 16px !important;
+      }
+      .container {
+        padding: 0 0.55rem;
+        margin-top: 0.6rem;
+      }
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+      }
+      .item-card {
+        padding: 0.75rem 0.8rem;
+      }
+      .header-title {
+        font-size: 1.25rem;
+      }
+      .author-note {
+        font-size: 0.68rem;
+      }
+      .tool-btn {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.4rem;
+      }
+      .controls-grid {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+      }
+      .search-control-group {
+        gap: 0.25rem;
+      }
+      .solid-clear-btn {
+        padding: 0.25rem 0.55rem;
+        font-size: 0.78rem;
+      }
+      .category-title {
+        font-size: 0.9rem;
+      }
+      .category-title-bar {
+        padding: 0.25rem 0.5rem;
+      }
+    }
+
+    /* ============================================================ */
+    /* 卡片操作按鈕 (收藏 / 複製)                                   */
+    /* ============================================================ */
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-shrink: 0;
+    }
+
+    .card-action-btn {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.92rem;
+      color: #868e96;
+      transition: all 0.15s;
+    }
+
+    [data-theme="dark"] .card-action-btn {
+      background: #181d2a;
+      border-color: #373f52;
+      color: #adb5bd;
+    }
+
+    .card-action-btn:hover {
+      background: #e7f5ff;
+      color: var(--primary);
+      border-color: #a5d8ff;
+    }
+
+    .card-action-btn:active {
+      transform: scale(0.9);
+    }
+
+    .fav-btn.is-fav {
+      color: #f59f00 !important;
+      border-color: #fcc419 !important;
+      background: #fff9db !important;
+    }
+
+    [data-theme="dark"] .fav-btn.is-fav {
+      background: #392f15 !important;
+      border-color: #8c7320 !important;
+      color: #fcc419 !important;
+    }
+
+    /* 動態劑量計算結果標籤 */
+    .dose-calc-pill {
+      margin-top: 0.4rem;
+      background: #e6fcf5;
+      border: 1.5px solid #63e6be;
+      border-radius: 6px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.86rem;
+      color: #087f5b;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      animation: fadeInDose 0.2s ease-out;
+    }
+
+    [data-theme="dark"] .dose-calc-pill {
+      background: #0d3125;
+      border-color: #197151;
+      color: #38d9a9;
+    }
+
+    @keyframes fadeInDose {
+      from { opacity: 0; transform: translateY(-3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Toast 懸浮提示通知 */
+    #toastNotification {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(33, 37, 41, 0.95);
+      color: white;
+      padding: 0.55rem 1.1rem;
+      border-radius: 30px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    #toastNotification.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* 空收藏狀態提示框 */
+    .empty-fav-hint {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background: white;
+      border-radius: 8px;
+      border: 2px dashed #ced4da;
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      margin: 1.5rem 0;
+      line-height: 1.8;
+    }
+
+    [data-theme="dark"] .empty-fav-hint {
+      background: #181d28;
+      border-color: #3a4254;
+      color: #adb5bd;
+    }
+
+    @media print {
+      header, .back-top, .card-actions, #toastNotification { display: none !important; }
+      body { background: white !important; color: black !important; padding: 0 !important; }
+      .item-card { box-shadow: none !important; border: 1px solid #ccc !important; break-inside: avoid; }
+      .category-section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="header-title-box">
+        <div class="header-title">💊 兒童常用藥品簡表</div>
+      </div>
+      <div class="author-note">
+        林聖興醫師編輯 (2020/5/27 ｜ 2022年發布) • <a href="https://ped.cc" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">ped.cc</a>
+      </div>
+    </div>
+
+    <!-- 小兒體重即時換算列 (方案 1: 全單排並排) -->
+    <div class="weight-calc-bar">
+      <div class="weight-calc-header">
+        <div class="weight-input-box">
+          <label class="weight-label" for="weightInput">👶 孩童體重試算：</label>
+          <input type="number" id="weightInput" class="weight-input" min="1" max="120" step="0.5" placeholder="kg" title="輸入孩童體重以自動換算各藥品劑量">
+          <span class="weight-unit-tag">kg</span>
+          <button class="weight-clear-btn" id="clearWeightBtn" title="清除體重">✕ 清除</button>
+        </div>
+        <span class="weight-shortcut-label">常用快捷</span>
+      </div>
+      <div class="weight-chips">
+        <button class="weight-chip" data-weight="6" title="6 公斤">6k</button>
+        <button class="weight-chip" data-weight="8" title="8 公斤">8k</button>
+        <button class="weight-chip" data-weight="10" title="10 公斤">10k</button>
+        <button class="weight-chip" data-weight="12" title="12 公斤">12k</button>
+        <button class="weight-chip" data-weight="15" title="15 公斤">15k</button>
+        <button class="weight-chip" data-weight="18" title="18 公斤">18k</button>
+        <button class="weight-chip" data-weight="20" title="20 公斤">20k</button>
+        <button class="weight-chip" data-weight="25" title="25 公斤">25k</button>
+        <button class="weight-chip" data-weight="30" title="30 公斤">30k</button>
+      </div>
+    </div>
+
+    <div class="controls-grid">
+      <!-- 下拉式選單 -->
+      <div class="select-wrap">
+        <select id="categorySelect" aria-label="選擇目錄分類">
+          <option value="all">📂 全部分類</option>
+          <option value="cat_favorites" style="font-weight: bold; color: #d9480f;">⭐ 我的常用藥品清單 (0)</option>
+          <optgroup label="常見症狀與呼吸道">
+            <option value="cat_fever">退燒、止痛</option>
+            <option value="cat_cough">止咳</option>
+            <option value="cat_phlegm">化痰</option>
+            <option value="cat_asthma">治喘、支氣管擴張劑</option>
+            <option value="cat_antihistamine">抗組織胺</option>
+          </optgroup>
+          <optgroup label="消化道與腸胃系統">
+            <option value="cat_antiemetic">止吐、促進腸胃蠕動</option>
+            <option value="cat_eps">EPS 解藥</option>
+            <option value="cat_colic">緩和腹絞痛(減少蠕動)</option>
+            <option value="cat_bloating">消脹氣</option>
+            <option value="cat_antacid">制酸劑</option>
+            <option value="cat_antidiarrheal">止瀉藥</option>
+            <option value="cat_laxative">緩瀉藥(治療便秘)</option>
+            <option value="cat_probiotics">益生菌、維他命</option>
+          </optgroup>
+          <optgroup label="重症急救與神經">
+            <option value="cat_steroid">類固醇</option>
+            <option value="cat_inotropic">口服強心劑</option>
+            <option value="cat_sedative">鎮靜、止痙(一線藥)</option>
+            <option value="cat_seizure_inj">預防癲癇：注射</option>
+            <option value="cat_seizure_oral">預防癲癇：常用口服藥</option>
+            <option value="cat_icp">降腦壓</option>
+            <option value="cat_diuretic">利尿劑</option>
+          </optgroup>
+          <optgroup label="抗感染專區">
+            <option value="cat_oral_anti">口服抗生素</option>
+            <option value="cat_inj_anti">注射抗生素 (含 Teicoplanin)</option>
+            <option value="cat_antifungal">抗黴菌藥</option>
+            <option value="cat_antiviral">抗病毒藥</option>
+            <option value="cat_flu">抗流感藥物</option>
+          </optgroup>
+          <optgroup label="五官與外用藥">
+            <option value="cat_eardrop">耳滴劑</option>
+            <option value="cat_nasal">噴鼻劑</option>
+            <option value="cat_oral_ext">口腔外用藥</option>
+            <option value="cat_skin_ext">皮膚外用藥</option>
+          </optgroup>
+          <optgroup label="臨床參考表格">
+            <option value="cat_ett">Endotracheal Tube 氣管內管</option>
+            <option value="cat_hr">心搏速率的參考範圍</option>
+            <option value="cat_htn">高血壓的參考範圍</option>
+            <option value="cat_hypotension">低血壓的簡易評估</option>
+            <option value="cat_gcs">昏迷指數 GCS</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- 搜尋與項目控制群組 (純粹就地篩選，滑動零亂跑) -->
+      <div class="search-control-group">
+        <div class="search-wrap">
+          <input type="text" id="searchInput" placeholder="🔍 搜尋藥名、學名、公式、病徵 (如: Secorine, 安佳熱, 哮吼, BW/4)...">
+          <button id="clearSearch" class="clear-search-btn" title="清除搜尋">✕</button>
+        </div>
+
+        <!-- 獨立實體清空按鈕 -->
+        <button class="solid-clear-btn" id="solidClearBtn" title="一鍵清空搜尋文字並還原全文">
+          ✕ 清空
+        </button>
+      </div>
+
+      <div id="statBadge" class="result-badge">顯示：全部 22 類 + 5 表格</div>
+    </div>
+  </div>
+</header>
+
+<div class="container" id="contentContainer">
+
+  <!-- 原書第一頁原則與說明橫幅 (零增減) -->
+  <div class="origin-banner" id="introBanner">
+    <div class="origin-banner-title">
+      <span>📖 《兒童常用藥品簡表》編輯目的與一般給藥原則</span>
+      <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);">Page 1 原文</span>
+    </div>
+
+    <div class="bullet-row">
+      <span class="bullet-icon">●</span>
+      <div class="bullet-text">本表編寫目的，在幫助兒科新手，簡易查到常用藥的一般用法。</div>
+    </div>
+    <div class="bullet-row">
+      <span class="bullet-icon">●</span>
+      <div class="bullet-text">相同藥品在不同疾病，可能劑量不一樣。新生兒用法（尤其抗生素），此處無詳述，請另行查閱相關資料，或請教資深醫師。</div>
+    </div>
+    <div class="bullet-row">
+      <span class="bullet-icon">●</span>
+      <div class="bullet-text">多數藥品最高劑量 1 顆 (注射藥 1 Amp 或 1 Vial)，然而有少數例外。</div>
+    </div>
+    <div class="bullet-row">
+      <span class="bullet-icon">●</span>
+      <div class="bullet-text">藥水多用 <span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL/dose (1 mL/kg/day)，顆粒多用 <span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆/dose，也有例外。</div>
+    </div>
+    <div class="bullet-row">
+      <span class="bullet-icon">●</span>
+      <div class="bullet-text">簡化編排：給藥途徑若無註明皆為口服，無標示 per day 者皆是 per dose。</div>
+    </div>
+    <div class="bullet-row">
+      <span class="bullet-icon">●</span>
+      <div class="bullet-text">列表順序大致為藥水、顆粒、注射藥，同劑型以常用程度或 ABC 字母排序。</div>
+    </div>
+    <div class="bullet-row">
+      <span class="bullet-icon">●</span>
+      <div class="bullet-text">糖尿病、苯酮尿症，或生酮飲食治療者，請勿開立糖漿。</div>
+    </div>
+
+    <div class="origin-history">
+      本資料以 2014 年版《乖乖手冊》為基礎，刪除停止供貨的藥品，省略加護病房及新生兒某些項目，主要適用於一般病房。2020 年在中國醫藥大學兒童醫院，印出紙本，供院內使用。電子檔原本 2020 年 6 月預備由網路發布分享出去，卻因事延遲。等到 2022 年 5 月，因多人詢問，而發布於網站。下一版《乖乖手冊》，可能把加護病房及新生兒用藥，再納入編輯，尚未確定何時編修完成。感謝讀者們的鼓勵支持！
+    </div>
+  </div>
+
+  <!-- ==================== 1. 退燒、止痛 [P2] ==================== -->
+  <section class="category-section" id="cat_fever" data-cat="cat_fever">
+    <div class="category-title-bar">
+      <div class="category-title">🌡️ 退燒、止痛</div>
+      <span class="category-page-tag">Page 2</span>
+    </div>
+
+    <div class="cards-grid">
+      <!-- 依照指示：學名粗字體在上方，商品名在下方 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Acetaminophen</div>
+            <div class="drug-name-secondary">Anti-phen 安佳熱 24mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">2</span></span> mL Q6H PRN</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ibuprofen</div>
+            <div class="drug-name-secondary">Idofen 舒抑痛 20 mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">4</span></span> ～ <span class="fraction"><span class="num">BW</span><span class="den">2</span></span> mL Q6H PRN</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Diclofenac sodium</div>
+            <div class="drug-name-secondary">Voren 非炎栓劑</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">12.5</span></span> (最高 1 顆) Q6H PRN</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Acetaminophen</div>
+            <div class="drug-name-secondary">Paramol 普除痛 500 mg/Tab ｜ Panadol 普拿疼 ｜ Scanol</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 (最高 1 顆) Q6H PRN</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Diclofenac Potassium</div>
+            <div class="drug-name-secondary">Cataflam 克他服寧 25 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 (最高 1 顆) BID~TID</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="boxed-guideline" style="margin-top: 1rem;">
+      <div class="bullet-row" style="font-weight: 700; color: var(--primary-dark);">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">Fever Routine:</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.6rem;">
+        <div>if BT &gt; 38 °C: Acetaminophen</div>
+        <div>if BT &gt; 38.5 °C: Ibuprofen</div>
+        <div>if BT &gt; 39 °C: Voren supp</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">若有 Febrile convulsion，用藥溫度各減 0.5 度</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">通常先用 Acetamoniphen，若仍高燒，改用比較強的 Ibuprofen。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 2. 止咳 [P2] ==================== -->
+  <section class="category-section" id="cat_cough" data-cat="cat_cough">
+    <div class="category-title-bar">
+      <div class="category-title">😮‍💨 止咳</div>
+      <span class="category-page-tag">Page 2</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Guaifenesin</div>
+            <div class="drug-name-secondary">Guaphen 咳酚 20 mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL QID ｜ 成人 10~20 mL</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Secorine 息咳寧</div>
+            <div class="drug-name-secondary">Guaifenesin + Methylephedrine + Chlorpheniramine Maleate</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL QID</div>
+        </div>
+        <div class="card-note">
+          <div class="bullet-row">
+            <span class="bullet-icon-arrow">▸</span>
+            <div class="bullet-text">Secorine 比較甜，但止咳效果比 Guaphen 弱。</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-arrow">▸</span>
+            <div class="bullet-text">若咳嗽輕微，也有鼻部症狀，可選用 Secorine，不必另開抗組織胺。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Medicon 滅咳康</div>
+            <div class="drug-name-secondary">Dextromethorphan + Cresolsulfonate</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL QID</div>
+        </div>
+        <div class="card-note">
+          <div class="bullet-row">
+            <span class="bullet-icon-arrow">▸</span>
+            <div class="bullet-text">Medicon 仿單劑量：</div>
+          </div>
+          <div class="bullet-sublist">
+            <div class="bullet-row">
+              <span class="bullet-icon-sub">•</span>
+              <div class="bullet-text">三個月至七歲 3~8 mL/day</div>
+            </div>
+            <div class="bullet-row">
+              <span class="bullet-icon-sub">•</span>
+              <div class="bullet-text">八至十四歲 9~16 mL/day</div>
+            </div>
+            <div class="bullet-row">
+              <span class="bullet-icon-sub">•</span>
+              <div class="bullet-text">成人 18~24 mL/day TID~QID</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 3. 化痰 [P2] ==================== -->
+  <section class="category-section" id="cat_phlegm" data-cat="cat_phlegm">
+    <div class="category-title-bar">
+      <div class="category-title">💧 化痰</div>
+      <span class="category-page-tag">Page 2</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Acetylcysteine</div>
+            <div class="drug-name-secondary">Encore 粉劑 ｜ Acetin 膠囊 200 mg</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            <span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 包 TID~QID<br>
+            體重≧40 公斤：1 顆 TID
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ambroxol</div>
+            <div class="drug-name-secondary">Mucosolvon 安嗽 30 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID~QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Bromhexine</div>
+            <div class="drug-name-secondary">Bisolvon 氣舒痰</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">3 mL inhalation QID</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 4. 治喘、支氣管擴張劑 [P2-3] ==================== -->
+  <section class="category-section" id="cat_asthma" data-cat="cat_asthma">
+    <div class="category-title-bar">
+      <div class="category-title">🫁 治喘、支氣管擴張劑</div>
+      <span class="category-page-tag">Page 2 ~ 3</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ketotifen</div>
+            <div class="drug-name-secondary">Athmin 喘敏 0.2 mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL BID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Procaterol</div>
+            <div class="drug-name-secondary">Exdila 喘解液 5 mcg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL (最高 5 mL) QD~BID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Theophylline</div>
+            <div class="drug-name-secondary">Ventol 舒喘液 5.34 mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL BID 或 Q12H</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Aminophylline</div>
+            <div class="drug-name-secondary">100 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            一至九歲：16 mg/kg/day QID<br>
+            九歲以上：12 mg/kg/day QID<br>
+            成人劑量：9 mg/kg/day QID
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Fenoterol</div>
+            <div class="drug-name-secondary">Berotec 2.5 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">60</span></span> 顆 TID~QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Epinephrine</div>
+            <div class="drug-name-secondary">Bosmin 吸入 (治療 Croup)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">0.5 mL/kg 最高 5 mL</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Salbutamol</div>
+            <div class="drug-name-secondary">Ventolin 吸入</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">2 mL QID</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 5. 抗組織胺 [P3] ==================== -->
+  <section class="category-section" id="cat_antihistamine" data-cat="cat_antihistamine">
+    <div class="category-title-bar">
+      <div class="category-title">🤧 抗組織胺</div>
+      <span class="category-page-tag">Page 3</span>
+    </div>
+
+    <div class="boxed-guideline" style="margin-bottom: 1rem;">
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">Cyproheptadine 可能造成嗜睡。</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">Peace 含 pseudoephedrine，對鼻塞療效較好，但可能躁動，不易入睡。</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">選擇 Cypromin 或 Peace，可先詢問睡眠情形。</div>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cyproheptadine</div>
+            <div class="drug-name-secondary">Cypromin 希普利敏 0.4 mg/mL ｜ Pilian 佩你安 4 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            <span class="fraction"><span class="num">BW</span><span class="den">6</span></span> mL TID~QID (藥水)<br>
+            <span class="fraction"><span class="num">BW</span><span class="den">60</span></span> 顆 TID~QID (顆粒)
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Peace 鼻福</div>
+            <div class="drug-name-secondary">每 mL 含 Triprolidine 0.25 mg + Pseudoephedrine 6 mg</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL TID~QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cetirizine</div>
+            <div class="drug-name-secondary">勝克敏液 1 mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            ≦2 歲：<span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL BID<br>
+            2~6 歲：5 mL QD 或 2.5 mL BID<br>
+            ≧6 歲：10 mL QD
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cetirizine</div>
+            <div class="drug-name-secondary">Cetin 金恩特 10 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">≧6 歲：0.5~1 顆 QD</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Dexchlorpheniramine</div>
+            <div class="drug-name-secondary">Tomin 妥敏 2 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Levocetirizine</div>
+            <div class="drug-name-secondary">Xyzal 驅異樂 5 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            6~11 歲：0.5 顆 HS<br>
+            ≧12 歲：1 顆 HS
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Loratadine + Pseudoephedrine</div>
+            <div class="drug-name-secondary">Minlife-P Finska-LP 特敏福 (Loratadine 5 mg + Pseudoephedrine 120 mg)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 BID ｜ 可能口渴，宜多喝水</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Meclizine</div>
+            <div class="drug-name-secondary">Bonamine (Clizine) 25 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID 治頭暈</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Diphenhydramine</div>
+            <div class="drug-name-secondary">Vena 注射</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">30</span></span> Amp IV 或 IM</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 6. 止吐、促進腸胃蠕動 [P3-4] ==================== -->
+  <section class="category-section" id="cat_antiemetic" data-cat="cat_antiemetic">
+    <div class="category-title-bar">
+      <div class="category-title">🤢 止吐、促進腸胃蠕動</div>
+      <span class="category-page-tag">Page 3 ~ 4</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Domperidone</div>
+            <div class="drug-name-secondary">Wempty 胃利空 ｜ Motilium 癒吐寧 10 mg/Tab Emetrol</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            <span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL TID (藥水)<br>
+            <span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID (錠劑)
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Mosapride</div>
+            <div class="drug-name-secondary">Mopride 摩舒胃清 5 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            <span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID<br>
+            <span style="color: #c92a2a; font-weight: 700;">避免併用 Erythromycin 或 Cimetidine</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Metoclopramide</div>
+            <div class="drug-name-secondary">Primperan 5 mg</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Metoclopramide 注射</div>
+            <div class="drug-name-secondary">Imperan 10mg/2mL/Amp</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            0.1~0.2 mg/kg/dose IV/IM (Q6~8 or 12 H)<br>
+            <span style="color: #c92a2a; font-weight: 700;">注意 Extrapyramidal syndrome (EPS)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 7. EPS 解藥 [P4] ==================== -->
+  <section class="category-section" id="cat_eps" data-cat="cat_eps">
+    <div class="category-title-bar">
+      <div class="category-title">🛡️ EPS 解藥</div>
+      <span class="category-page-tag">Page 4</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Biperiden</div>
+            <div class="drug-name-secondary">Akineton</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            &lt;1 歲：1 mg/dose，≧1 歲：2 mg/dose<br>
+            隔 30 分鐘可再 IM 或 slow IV 一天最多 4 次
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Diphenhydramine</div>
+            <div class="drug-name-secondary">Vena</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">1 mg/kg/dose IV 或 IM 最高 30 mg</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 8. 緩和腹絞痛(減少蠕動) [P4] ==================== -->
+  <section class="category-section" id="cat_colic" data-cat="cat_colic">
+    <div class="category-title-bar">
+      <div class="category-title">🛑 緩和腹絞痛(減少蠕動)</div>
+      <span class="category-page-tag">Page 4</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Dicyclomine</div>
+            <div class="drug-name-secondary">Bentyl 10 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID~QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Butylscopolamine 注射</div>
+            <div class="drug-name-secondary">Buscopan 20 mg/mL/Amp</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">(0.02 mL) /kg/dose IV</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="boxed-guideline" style="margin-top: 1rem;">
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">儘可能少用此類藥！聽腸音，確認 hyperactive 才用。</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">若達療效，宜及早停藥，以免腸蠕動變太慢。</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">熱毛巾溫敷，也可緩解腸絞痛。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 9. 消脹氣 [P4] ==================== -->
+  <section class="category-section" id="cat_bloating" data-cat="cat_bloating">
+    <div class="category-title-bar">
+      <div class="category-title">🫧 消脹氣</div>
+      <span class="category-page-tag">Page 4</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Dimethyl Polysiloxane</div>
+            <div class="drug-name-secondary">Gaslan 40 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            <span class="fraction"><span class="num">BW</span><span class="den">40</span></span> ～ <span class="fraction"><span class="num">BW</span><span class="den">20</span></span> 顆/dose TID~QID<br>
+            成人一次 1~2 顆，一天總量最多 6 顆
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 10. 制酸劑 [P4] ==================== -->
+  <section class="category-section" id="cat_antacid" data-cat="cat_antacid">
+    <div class="category-title-bar">
+      <div class="category-title">🛡️ 制酸劑</div>
+      <span class="category-page-tag">Page 4</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Strocaine</div>
+            <div class="drug-name-secondary">息痛佳音</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID~QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Lichia</div>
+            <div class="drug-name-secondary">力佳治</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID~QID</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 11. 止瀉藥 [P4] ==================== -->
+  <section class="category-section" id="cat_antidiarrheal" data-cat="cat_antidiarrheal">
+    <div class="category-title-bar">
+      <div class="category-title">🛑 止瀉藥</div>
+      <span class="category-page-tag">Page 4</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Racecadotril</div>
+            <div class="drug-name-secondary">瀉必寧 10 mg/pk</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            ≧3 個月：1.5 mg/kg/dose (最高一次一包) TID<br>
+            健保給付五天，第六天起，自費使用。
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Dioctahedral Smectite Powder</div>
+            <div class="drug-name-secondary">Smecta 舒腹達 3 g/pk</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            ※限用於 2 歲以上※ 2~3 pk/day TID<br>
+            成人 1 pk/dose TID
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 12. 緩瀉藥(治療便秘) [P4] ==================== -->
+  <section class="category-section" id="cat_laxative" data-cat="cat_laxative">
+    <div class="category-title-bar">
+      <div class="category-title">🚽 緩瀉藥(治療便秘)</div>
+      <span class="category-page-tag">Page 4</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">MgO</div>
+            <div class="drug-name-secondary">250 mg/Tab (氧化鎂)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content"><span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 TID (輕度便秘可用 QD~BID)</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Lactulose</div>
+            <div class="drug-name-secondary">Lactul 樂多</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            便秘：1-3 mL/kg/day QD~BID 最高 60 mL/day<br>
+            肝性腦病變：40~90 mL/day TID~QID
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Sennosides</div>
+            <div class="drug-name-secondary">Through 便通樂 20 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            3~5 歲：0.25~0.5 顆 HS<br>
+            6~12 歲：0.5~1 顆 HS
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Glycerin Ball</div>
+            <div class="drug-name-secondary">甘油球(浣腸)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">3~6 歲 10 mL，6 歲以上 20mL</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 13. 益生菌、維他命 [P5] ==================== -->
+  <section class="category-section" id="cat_probiotics" data-cat="cat_probiotics">
+    <div class="category-title-bar">
+      <div class="category-title">🥛 益生菌、維他命</div>
+      <span class="category-page-tag">Page 5</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Lactobacillus casei</div>
+            <div class="drug-name-secondary">Antibiophilus 阿德比</div>
+          </div>
+          <span class="fee-badge">一顆 10.4</span>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            &lt;10 公斤： 1 顆 QD<br>
+            10~20 公斤： 1 顆 BID<br>
+            &gt;20 公斤： 1 顆 TID
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Clostridium butyricum miyairi</div>
+            <div class="drug-name-secondary">Miyarisan 妙利散</div>
+          </div>
+          <span class="fee-badge">一包 20</span>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            &lt;10 公斤： 0.33 包 TID<br>
+            10~20 公斤： 0.5 包 TID<br>
+            &gt;20 公斤： 1 包 TID
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Lactobacillus rhamnosus</div>
+            <div class="drug-name-secondary">摩舒益多</div>
+          </div>
+          <span class="fee-badge">一顆 26</span>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">≧12 歲： 1 顆 TID~QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Muco-relax</div>
+            <div class="drug-name-secondary">妙可適 (一盒 NT$2100)</div>
+          </div>
+          <span class="fee-badge">一顆 75</span>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">1~2 顆 QD (整盒開立 28 顆)</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Baby Vitamins</div>
+            <div class="drug-name-secondary">寶益兒 綜合維他命</div>
+          </div>
+          <span class="fee-badge">一瓶 500</span>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">1 mL QD</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">BioGaia ProTectis</div>
+            <div class="drug-name-secondary">寶乖亞 益生菌</div>
+          </div>
+          <span class="fee-badge">一瓶 1600</span>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">5 滴 BID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">LiquiD P&B</div>
+            <div class="drug-name-secondary">優寶滴 (維他命 D3)</div>
+          </div>
+          <span class="fee-badge">一瓶 1900</span>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">1 滴 (400 IU) QD</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 14. 類固醇 [P5] ==================== -->
+  <section class="category-section" id="cat_steroid" data-cat="cat_steroid">
+    <div class="category-title-bar">
+      <div class="category-title">💉 類固醇</div>
+      <span class="category-page-tag">Page 5</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Prednisolone</div>
+            <div class="drug-name-secondary">Kidsolone 必爾生 1mg/mL ｜ Donison 樂爾爽 5 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            氣喘急性發作：<br>
+            1~2 mg/kg/day BID~QD 三至五天
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Dexamethasone 口服</div>
+            <div class="drug-name-secondary">Decalon 得嘉能 0.5 mg/Tab ｜ Dorison 得立生 4 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            0.024~0.34 mg/kg/day<br>
+            成人 0.75~9 mg/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Dexamethasone 注射</div>
+            <div class="drug-name-secondary">Methasone 5 mg/mL/Amp</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">(以下詳細說明專區)</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Hydrocortisone 注射</div>
+            <div class="drug-name-secondary">Hydrocortisone</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">氣喘 4~5 mg/kg/dose Q6H</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Methylprednisolone 注射</div>
+            <div class="drug-name-secondary">Solu-Medrol 500 mg/vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            氣喘 1~2 mg/kg/day Q12H<br>
+            其他疾病，各專科不同，請詢問資深醫師
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dexamethasone 注射四大專項 -->
+    <div class="boxed-guideline" style="margin-top: 1rem;">
+      <div style="font-weight: 700; color: var(--primary-dark); font-size: 1rem; margin-bottom: 0.5rem;">
+        ◆ Dexamethasone 注射
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">哮吼(Croup)</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">0.6 mg/kg/dose IM 或 IV (僅一劑)</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">最高劑量 5 mg (1 Amp)</div>
+        </div>
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">預防拔管後呼吸道腫脹：</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">0.25 mg/kg/dose 給三次</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">在拔管前 4~6 hr 給第一劑</div>
+        </div>
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">腦水腫</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">首次劑量 1.5 mg/kg/dose IV</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">之後 1.5 mg/kg/day 分成 Q4H~Q6H，用五天，第六至第十天漸減而停止。</div>
+        </div>
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">脊髓壓迫</div>
+      </div>
+      <div class="bullet-sublist">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">1~2 mg/kg/day</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 15. 口服強心劑 [P6] ==================== -->
+  <section class="category-section" id="cat_inotropic" data-cat="cat_inotropic">
+    <div class="category-title-bar">
+      <div class="category-title">❤️ 口服強心劑</div>
+      <span class="category-page-tag">Page 6</span>
+    </div>
+
+    <div class="boxed-guideline">
+      <div style="font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">◆ Digoxin elixir</div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">Cardiacin 0.25 mg/Tab</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">地高新酏劑 0.05 mg (50 mcg)/mL</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+      <div>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>年齡</th>
+              <th>Digitizing<br>(mcg/kg/day)</th>
+              <th>Maintain<br>(mcg/kg/day)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>滿月至 2 歲</td><td>35-60</td><td>10-15</td></tr>
+            <tr><td>2-5 歲</td><td>30-40</td><td>7.5-10</td></tr>
+            <tr><td>5-10 歲</td><td>20-35</td><td>5-10</td></tr>
+            <tr><td>&gt;10 歲</td><td>10-15</td><td>2.5-5</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>對象</th>
+              <th>Digitizing<br>(mg)</th>
+              <th>Maintain<br>(mg)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>成人</td><td>0.75-1.5</td><td>0.125-0.5</td></tr>
+          </tbody>
+        </table>
+        <div class="card-note">
+          <div class="bullet-row">
+            <span class="bullet-icon-arrow">▸</span>
+            <div class="bullet-text">10 歲以下：每日劑量分兩次</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-arrow">▸</span>
+            <div class="bullet-text">10 歲以上：QD 一次給藥</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-arrow">▸</span>
+            <div class="bullet-text">腎功能不良之患者，宜另行計算，調整劑量。</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-arrow">▸</span>
+            <div class="bullet-text">簡算法：5 mcg/kg/dose (<span class="fraction"><span class="num">BW</span><span class="den">10</span></span> mL) BID</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-arrow">▸</span>
+            <div class="bullet-text">一開始僅用 Maintain 劑量，為 Slowly Digitizing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 16. 口服抗生素 [P6-7] ==================== -->
+  <section class="category-section" id="cat_oral_anti" data-cat="cat_oral_anti">
+    <div class="category-title-bar">
+      <div class="category-title">💊 口服抗生素</div>
+      <span class="category-page-tag">Page 6 ~ 7</span>
+    </div>
+
+    <div class="boxed-guideline">
+      口服抗生素固定間隔服用，可得較好效果。有時考量睡眠連續，變通調整服藥時間。
+      <table class="clean-table" style="margin-top: 0.5rem;">
+        <thead>
+          <tr>
+            <th>次數</th>
+            <th>固定間隔</th>
+            <th>變通時間</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>一天兩次</td><td>Q12H (9 am, 9 pm)</td><td>BID (9 am, 5 pm)</td></tr>
+          <tr><td>一天三次</td><td>Q8H (9 am, 5 pm, 1 am)</td><td>TID (9 am, 1 pm, 5 pm)</td></tr>
+          <tr><td>一天四次</td><td>Q6H (9 am, 3 pm, 9 pm, 3 am)</td><td>QID (9 am, 1 pm, 5 pm, 9 pm)</td></tr>
+        </tbody>
+      </table>
+      <div class="text-center" style="font-size: 0.82rem; color: #6c757d;">以下劑量，參考 Red Book 2018~2021</div>
+    </div>
+
+    <div class="cards-grid" style="margin-top: 1rem;">
+      <!-- 青黴素類 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Amoxicillin</div>
+            <div class="drug-name-secondary">Amolin 萬博黴素 50 mg/mL ｜ 安謀黴素 250 mg/cap (青黴素類)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            一般 40-45 mg/kg/day 分成三次<br>
+            高劑量 80-90 mg/kg/day 分成兩次<br>
+            中耳炎 90 mg/kg/day 分成兩次<br>
+            鏈球菌咽喉炎：50 mg/kg/day 十天 (最高 1000 mg/day) 一日單次或分成多次，效果相同
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Amoxicillin + Clavulanic acid</div>
+            <div class="drug-name-secondary">安滅菌 (400 mg + 57 mg) /5 mL ｜ Augmentin 1 g/Tab (Curam)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            12 歲以上：1 顆 Q12H<br>
+            (2 個月至 12 歲) 由 Amoxicillin 成份計算劑量：<br>
+            &nbsp;&nbsp;<b>80 mg/kg/day = 1 mL/kg/day Q12H</b><br>
+            兒童肺炎 Amoxicillin 90 mg/kg/day (1.125 mL/kg/day) 分成 BID~TID<br>
+            台灣肺炎指引，兒童抗生素劑量建議社區肺炎 80~90 mg/kg/day BID 最高 Amox 1 g/dose<br>
+            嚴重中耳炎、鼻竇炎 90 mg/kg/day BID 十天
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Dicloxacillin</div>
+            <div class="drug-name-secondary">Diclocin 慮可信 250 mg/cap (青黴素類)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            蜂窩組織炎 12.5~25 mg/kg/day QID 最高 1 g/day<br>
+            骨髓炎或關節炎 100 mg/kg/day QID 最高 2 g/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Sultamicillin</div>
+            <div class="drug-name-secondary">Unasyn 優耐迅 375 mg/Tab (Amp 250 mg + Sulbactam 125 mg)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            &lt;30 kg：25~50 mg/kg/day 分成兩次<br>
+            <span class="fraction"><span class="num">BW</span><span class="den">30</span></span> 顆/dose BID = 50 mg/kg/day<br>
+            ≧30 kg 或成人 750 mg (2 顆)/ dose BID
+          </div>
+        </div>
+      </div>
+
+      <!-- 頭孢素 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cephradine (第一代)</div>
+            <div class="drug-name-secondary">Lisacef 500 mg/cap</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            25~50 mg/kg/day Q6H 或 Q12H 最高 4 g/day<br>
+            成人 250~500 mg/dose Q6H 或 500 mg/dose Q12H
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cefixime (第三代)</div>
+            <div class="drug-name-secondary">Cefixmycin 100 mg/Cap</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            8 mg/kg/day QD 或 4 mg/kg/dose Q12H<br>
+            成人 250~500 mg (1~2 顆) QD~Q12H ｜ 最高 2 顆/dose
+          </div>
+        </div>
+      </div>
+
+      <!-- 抗黴漿菌 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Azithromycin</div>
+            <div class="drug-name-secondary">Zithromax 日舒 40 mg/mL ｜ 日舒錠 250 mg/Tab (抗黴漿菌)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            常用 10 mg/kg/day 三天<br>
+            <b>0.25 mL/kg (最高 5 mL) QD (餐前服藥)</b> (速算 <span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL QD)<br>
+            20~40 kg：錠劑 1~1.5 顆 QD 用三天<br>
+            若體重≧40 kg，比照成人 2 顆 QD 用三天<br>
+            **另一種給法：首日 10 mg/kg/day，續用 5 mg/kg/day 四天，療效相當
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Doxycycline</div>
+            <div class="drug-name-secondary">100 mg/cap</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            2.2~4.4 mg/kg/day (最高 200 mg/day) QD 或 Q12H<br>
+            <span style="color: #c92a2a; font-weight: 700;">※若有蠶豆症，不用此藥※</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 磺胺類 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Trimethoprim + Sulfamethoxazole</div>
+            <div class="drug-name-secondary">Sulfacotrim 藥水 ｜ Baktar 480 mg/Tab (磺胺類)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            <span class="fraction"><span class="num">BW</span><span class="den">2</span></span> mL/dose Q12H 或 <span class="fraction"><span class="num">BW</span><span class="den">20</span></span> 顆/dose Q12H<br>
+            膀胱輸尿管逆流：<span class="fraction"><span class="num">BW</span><span class="den">4</span></span> mL/dose HS<br>
+            成人劑量 2 顆/dose Q12H<br>
+            治療肺囊蟲感染：15~20 TMP mg/kg/day TID~QID，依體重計算，無限定最高劑量<br>
+            預防肺囊蟲：5 TMP mg/kg/day Q12H，一週服藥三天，最高劑量 160 mg (2 顆)/day
+          </div>
+        </div>
+      </div>
+
+      <!-- 喹諾酮類 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ciprofloxacin</div>
+            <div class="drug-name-secondary">Ciproxin 速博新 500 mg/Tab (喹諾酮類)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">20-40 mg/kg/day Q12H 最高 1.5 g/day</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Levofloxacin</div>
+            <div class="drug-name-secondary">Cravit 可樂必妥 500mg/Tab (喹諾酮類)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            Bacillus anthracis exposure<br>
+            ≧6 個月且≦50 kg：16 mg/kg/day Q12H 最高 500 mg/day<br>
+            &gt;50 kg: 500 mg/dose QD
+          </div>
+        </div>
+      </div>
+
+      <!-- 其他 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Fusidate Sodium</div>
+            <div class="drug-name-secondary">Fucidin 膚即淨 250 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            &lt;1 歲： 50 mg/kg/day Q8H<br>
+            1~5 歲： 250 mg (1 顆) /dose Q8H<br>
+            5~12 歲：250~500 mg (1~2 顆) /dose Q8H<br>
+            &gt;12 歲及成人：500 mg (2 顆) /dose Q8H
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 17. 注射抗生素 [P8-10] ==================== -->
+  <section class="category-section" id="cat_inj_anti" data-cat="cat_inj_anti">
+    <div class="category-title-bar">
+      <div class="category-title">💉 注射抗生素</div>
+      <span class="category-page-tag">Page 8 ~ 10</span>
+    </div>
+
+    <div class="boxed-guideline">
+      ※若藥品劑型變動，每 Amp 或 Vial 含量不同，請注意劑量之換算。※<br>
+      注意：新生兒劑量，請另行查閱資料。<br>
+      資料來源：無註明者皆是 Red Book 2018~2021，少數參考《熱病》2019、MicroMedex
+    </div>
+
+    <div class="cards-grid" style="margin-top: 1rem;">
+      <!-- Penicillins -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Penicillin G</div>
+            <div class="drug-name-secondary">1000 萬 U/Vial (Penicillins)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            100,000~300,000 units/kg/day Q4H~Q6H<br>
+            300,000~400,000 units/kg/day Q4H 腦膜炎劑量<br>
+            最高 24 million units per day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ampicillin</div>
+            <div class="drug-name-secondary">500 mg/Amp (Penicillins)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            肺炎 150~200 mg/kg/day Q6H 最高 8 g/day<br>
+            腦膜炎、心內膜炎 300~400 mg/kg/day Q4~6H max 最高 12 g/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Oxacillin</div>
+            <div class="drug-name-secondary">500 mg/Vial (Penicillins)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">100~200 mg/kg/day Q4~6H 最高 12 g/day</div>
+        </div>
+      </div>
+
+      <!-- Carbapenems -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ertapenem</div>
+            <div class="drug-name-secondary">1000 mg/Vial (Carbapenems)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            15 mg/kg/dose Q12H (infusion 3 hours) 最高 1 g/day<br>
+            ≥13 y and adults, 1 g QD (infusion 3 hours)
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Meropenem</div>
+            <div class="drug-name-secondary">250 mg/Vial (Carbapenems)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            60 mg/kg/day Q8H 最高 3 g/day (infusion 3 hours)<br>
+            腦膜炎 120 mg/kg/day Q8H 最高 6 g/day (infusion 3 hours)
+          </div>
+        </div>
+      </div>
+
+      <!-- Aminoglycosides -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Gentamicin</div>
+            <div class="drug-name-secondary">80 mg/Amp (Aminoglycosides)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            6~7.5 mg/kg/day Q8H 或 5~7.5 mg/kg/day QD
+          </div>
+        </div>
+      </div>
+
+      <!-- 頭孢素 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cefazolin (第一代)</div>
+            <div class="drug-name-secondary">Stalozin 1 g/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            25~75 mg/kg/day Q8H (最高 1 g/dose) 最高 6 g/day<br>
+            嚴重感染 150 mg/kg/day Q6~8H 最高 12 g/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cefoxitin (第二代)</div>
+            <div class="drug-name-secondary">Cexitin 1 g/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            80~160 mg/kg/day Q6H~Q8H 最高 12 g/day<br>
+            嚴重感染 100~160 mg/kg/day Q4H~Q6H 最高 12 g/day<br>
+            青春期、成人 1~2 g/dose Q6H~Q8H 最高 12 g/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cefotaxime (第三代)</div>
+            <div class="drug-name-secondary">Claforan 2 g/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            150~200 mg/kg/day Q6H~Q8H 最高 8 g/day<br>
+            腦膜炎 300 mg/kg/day Q6H 最高 12 g/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ceftazidime (第三代)</div>
+            <div class="drug-name-secondary">Fortum 500 mg/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            90~150 mg/kg/day Q8H 最高 6 g/day<br>
+            嚴重綠膿桿菌感染 200~300 mg/kg/day Q8H 最高 12 g/day<br>
+            成人 1~2 g/dose Q8~12H
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ceftriaxone (第三代)</div>
+            <div class="drug-name-secondary">Rocephin 500 mg /Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            50~75 mg/kg QD 最高 1 g/day 成人 1~2 g/dose Q12H~Q24H<br>
+            腦膜炎 100 mg/kg/day QD~Q12H 最高 4 g/day<br>
+            中耳炎 50 mg/kg IM QD 1~3 天，最高 1 g/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Flomoxef (第三代)</div>
+            <div class="drug-name-secondary">Flumarin 500 mg/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            20 mg/kg/dose Q6~8H<br>
+            重度感染 150 mg/kg/day Q6~8H<br>
+            成人 1~2 g/day Q12H 最高 4 g/day 分成兩到四次
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Cefepime (第四代)</div>
+            <div class="drug-name-secondary">Maxipime 500 mg / Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            100 mg/kg/day Q12H 最高 4 g/day 成人 1~2 g/dose Q12H<br>
+            150 mg/kg/day Q8H (用於 Pseudomonas infections 或 febrile neutropenia) 最高 6 g/day 成人 2 g/dose Q8H
+          </div>
+        </div>
+      </div>
+
+      <!-- 混合型抗生素 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Amoxicillin + Clavulanate (混合型)</div>
+            <div class="drug-name-secondary">Augmentin (Curam) (Soonmelt) 每 Vial 1.2 g (Amox 1g + Clav 200mg)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">以指標成份為基準計算</span>
+          <div class="dose-formula-content">
+            Amoxicillin 75~100 mg/kg/day IV Q6~8H<br>
+            最高每日 Amoxicillin 4,000 mg (=Augmentin 4,800 mg)<br>
+            簡算法：Augmentin 90~120 mg/kg/day<br>
+            常用 120 mg/kg/day Q6~8H<br>
+            ≧12 歲及成人 1.2 g (2 Vial)/dose Q6~8H
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Trimethoprim + Sulfamethoxazole (混合型)</div>
+            <div class="drug-name-secondary">Sevatrim 每 Vial 480 mg (TMP 80mg + SMZ 400mg)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">以指標成份為基準計算</span>
+          <div class="dose-formula-content">
+            8~10 mg TMP /kg/day Q12H (Sevatrim 48~60 mg/kg/day)<br>
+            預防 UTI: 2 mg TMP /kg/dose QD (Sevatrim 12 mg/kg QD)<br>
+            治療肺囊蟲感染：15-20 TMP mg/kg/day Q6~8H，(Sevatrim 90~120 mg/kg/day) 無限定最高劑量<br>
+            預防肺囊蟲：5 mg TMP /kg/day Q12H (Sevatrim 30 mg/kg/day)，一週用三天，最高 160 mg TMP (2 Vial) /day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Piperacillin + Tazobactam (混合型)</div>
+            <div class="drug-name-secondary">Tazocin 每 Vial 2.25 g (Piperacillin 2g + Tazobactam 250mg)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">以指標成份為基準計算</span>
+          <div class="dose-formula-content">
+            240~300 mg Piperacillin /kg/day Q6~8H (最高 16 g Piperacillin /day)<br>
+            <b>先計算 Piperacillin 劑量，乘以 1.125 為 Tazocin 總量</b><br>
+            成人 3.375 g Q6H 或 4.5 g Q8H
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Amoxicillin + Sulbactam (混合型)</div>
+            <div class="drug-name-secondary">Unasyn 每 Vial 750 mg (Amox 500mg + Sulbactam 250mg)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">以指標成份為基準計算</span>
+          <div class="dose-formula-content">
+            Ampicillin 150~400 mg/kg/day IV Q6~8H 最高 2,000 mg (4 Vial)<br>
+            台灣肺炎指引，兒童抗生素劑量建議：Ampicillin 100~200 mg/kg/day Q6H 最高 8 g/day<br>
+            簡算法 Unasyn 150~300 mg/kg/day Q6H 最高 16 Vial/day<br>
+            腦膜炎或抗藥 Streptococcus pneumoniae 感染：200~400 mg/kg/day Q6H (=Unasyn 300~600 mg/kg/day)
+          </div>
+        </div>
+      </div>
+
+      <!-- Quinolone / 其他 -->
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ciprofloxacin</div>
+            <div class="drug-name-secondary">Ciproxin 100 mg/瓶 (Quinolone 類)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">20-30 mg/kg/day Q12H 最高 1.2 g/day</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Metronidazole</div>
+            <div class="drug-name-secondary">Anegyn 500 mg/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            治療厭氧菌感染，例如腸穿孔、腹膜炎。<br>
+            22.5~40 mg/kg/day Q6~8H 最高 4 g/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Vancomycin</div>
+            <div class="drug-name-secondary">500 mg/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            40~60 mg/kg/day Q6~8H (注射&gt;60 分鐘) 初用最高 2 g/dose<br>
+            目標為血中最低濃度(Trough level) 10~15 μg/mL<br>
+            大多數可能用 60 mg/kg/day 達到目標濃度 (熱病 2019)<br>
+            Trough level: 約在第 4~6 劑給藥前抽血 (Micromedex)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teicoplanin Targocid 專頁 [P10] -->
+    <div style="margin-top: 1.5rem; background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+      <div style="font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 0.4rem;">
+        ◆ Teicoplanin Targocid 200 mg/Vial
+      </div>
+      <div class="card-note">
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text">IV (bolus 3~5 分鐘，或緩緩滴注 30 分鐘) ，也可 IM</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text">Loading Q12H 三劑 (嚴重感染者六劑) 之後 QD 使用</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 0.75rem;">
+        <b>◆ 社區肺炎、院內感染肺炎、複雜型皮膚或皮下感染 (總療程不超過四個月)</b>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>年齡</th>
+              <th>Loading dose<br>Target trough &gt;15 μg/mL (三到五天)</th>
+              <th>Maintenance dose<br>Target trough &gt;15 μg/mL (每週)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>≧12 歲</td><td>6 mg/kg/dose Q12H 三次 (或六次)</td><td>6 mg/kg Q24H</td></tr>
+            <tr><td>2 月~12 歲</td><td>10 mg/kg Q12H 三次 (或六次)</td><td>6-10 mg/kg Q24H</td></tr>
+            <tr><td>&lt;2 個月</td><td>16 mg/kg/dose 第一天</td><td>8 mg/kg Q24H</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 0.75rem;">
+        <b>◆ 骨骼、關節感染 (總療程不超過四個月)</b>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>年齡</th>
+              <th>Loading dose (IV/IM)<br>Target trough &gt;20 μg/mL (三到五天)</th>
+              <th>Maintenance dose (IV/IM)<br>Target trough &gt;20 μg/mL (每週)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>≧12 歲</td><td>12 mg/kg/dose Q12H 三次(或六次)</td><td>12 mg/kg Q24H</td></tr>
+            <tr><td>2 月~12 歲</td><td>10 mg/kg Q12H 三次(或六次)</td><td>6-10 mg/kg Q24H</td></tr>
+            <tr><td>&lt;2 個月</td><td>16 mg/kg/dose 第一天</td><td>8 mg/kg Q24H</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 0.75rem;">
+        <b>◆ 感染性心內膜炎 (至少治療 21 天)</b>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>年齡</th>
+              <th>Loading dose (IV/IM)<br>Target trough 30~40 μg/mL (三到五天)</th>
+              <th>Maintenance dose (IV/IM)<br>Target trough &gt;30 μg/mL (每週)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>≧12 歲</td><td>12 mg/kg/dose Q12H 三次 (或六次)</td><td>12 mg/kg Q24H</td></tr>
+            <tr><td>2 月~12 歲</td><td>10 mg/kg Q12H 三次 (或六次)</td><td>6-10 mg/kg Q24H</td></tr>
+            <tr><td>&lt;2 個月</td><td>16 mg/kg/dose 第一天</td><td>8 mg/kg Q24H</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-note" style="margin-top: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text">FPIA: Fluorescence Polarization Immunoassay (有的醫院，可能沒有這項檢驗)</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text">Target trough (血中最低濃度)採用 FPIA 方法檢測</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text"><b>Teicoplanin 資料來源：Micromedex</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 18. 抗黴菌藥 [P11] ==================== -->
+  <section class="category-section" id="cat_antifungal" data-cat="cat_antifungal">
+    <div class="category-title-bar">
+      <div class="category-title">🍄 抗黴菌藥</div>
+      <span class="category-page-tag">Page 11</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Mycostatin</div>
+            <div class="drug-name-secondary">Nystatin 50 萬 U/Cap</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">嬰兒鵝口瘡，一次一顆膠囊倒出粉末，局部塗抹 QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Nystatin</div>
+            <div class="drug-name-secondary">漱口液，每瓶 24 mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">化療兒童，防止口腔感染。若無漱口液，可用膠囊粉末泡製</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Amphotericin-B</div>
+            <div class="drug-name-secondary">Fungizone 50 mg/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">1.0-1.5 mg/kg/day QD 滴注 2~4 小時</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Liposomal Amphotericin B</div>
+            <div class="drug-name-secondary">AmBisome 50 mg/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">3-5 mg/kg/day QD 滴注 1~2 小時</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 19. 抗病毒藥 [P11] ==================== -->
+  <section class="category-section" id="cat_antiviral" data-cat="cat_antiviral">
+    <div class="category-title-bar">
+      <div class="category-title">🦠 抗病毒藥</div>
+      <span class="category-page-tag">Page 11</span>
+    </div>
+
+    <div class="boxed-guideline">
+      <div style="font-weight: 700; color: var(--primary-dark); font-size: 1rem; margin-bottom: 0.5rem;">
+        ◆ Acyclovir 250 mg/Vial
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">HSV 腦炎</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">4 個月~12 歲：30-45 mg/kg/day IV Q8H 治療 14~21 天</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">12 歲以上：30 mg/kg/day IV Q8H 治療 14~21 天</div>
+        </div>
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">皰疹性齒齦口腔炎(免疫功能正常)</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">80 mg/kg/day 口服 QID 治療 5~7 天</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">最高 3200 mg/day</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">12 歲以上：4000 mg/day 分五次口服，治療 5~7 天</div>
+        </div>
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">水痘、帶狀疱疹 (免疫功能低下，或免疫功能正常，但需住院)</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">30 mg/kg/day IV Q8H 治療 7~10 天</div>
+        </div>
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">水痘 (免疫功能正常)</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">口服(2 歲以上)： 80 mg/kg/day (最高 3200 mg/day) QID 治療 5 天</div>
+        </div>
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">帶狀疱疹 (免疫功能正常)</div>
+      </div>
+      <div class="bullet-sublist" style="margin-bottom: 0.5rem;">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">口服(12 歲以上)： 4000 mg/day QID 治療 5~7 天</div>
+        </div>
+      </div>
+
+      <div class="bullet-row" style="font-weight: 700;">
+        <span class="bullet-icon-arrow">◆</span>
+        <div class="bullet-text">HSV (免疫功能低下)局部、進展、或瀰漫感染</div>
+      </div>
+      <div class="bullet-sublist">
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">IV: 30 mg/kg/day Q8H 治療 7~14 天</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-sub">•</span>
+          <div class="bullet-text">口服(2 歲以上)： 1000 mg/day (分 3~5 次) 治療 7~14 天</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 20. 抗流感藥物 [P11-12] ==================== -->
+  <section class="category-section" id="cat_flu" data-cat="cat_flu">
+    <div class="category-title-bar">
+      <div class="category-title">🌡️ 抗流感藥物</div>
+      <span class="category-page-tag">Page 11 ~ 12</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div class="boxed-guideline">
+        <div style="font-weight: 700; color: var(--primary-dark); font-size: 1rem; margin-bottom: 0.4rem;">
+          ◆ Oseltamivir 口服 BID，治療 5 天
+        </div>
+        <div style="font-weight: 600; color: #495057; margin-bottom: 0.3rem;">
+          ◆ Tamiflu 克流感 (Eraflu 易剋感)
+        </div>
+        <table class="clean-table" style="margin-top: 0.4rem;">
+          <thead><tr><th>嬰兒月齡</th><th>每次劑量</th></tr></thead>
+          <tbody>
+            <tr><td>&lt;9 個月</td><td>3 mg/kg</td></tr>
+            <tr><td>9~12 個月</td><td>3.5 mg/kg</td></tr>
+          </tbody>
+        </table>
+
+        <div style="font-weight: 600; color: #495057; margin-top: 0.6rem; margin-bottom: 0.2rem;">
+          ◆ 1 歲&lt;年齡 ≦ 13 歲
+        </div>
+        <table class="clean-table" style="margin-top: 0.3rem;">
+          <thead><tr><th>(公斤)</th><th>每次劑量</th></tr></thead>
+          <tbody>
+            <tr><td>體重≦15</td><td>30 mg (0.4 顆)</td></tr>
+            <tr><td>15&lt;體重≦23</td><td>45 mg (0.6 顆)</td></tr>
+            <tr><td>23&lt;體重≦40</td><td>60 mg (0.8 顆)</td></tr>
+            <tr><td>40&lt;體重</td><td>75 mg (1 顆)</td></tr>
+          </tbody>
+        </table>
+        <div class="bullet-row" style="margin-top: 0.4rem;">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text">＞13 歲：每次 1 顆</div>
+        </div>
+      </div>
+
+      <div class="boxed-guideline">
+        <div style="font-weight: 700; color: var(--primary-dark); font-size: 1rem; margin-bottom: 0.4rem;">
+          ◆ Zanamivir
+        </div>
+        <div style="font-weight: 600; color: #495057;">◆ Relenza 瑞樂沙旋碟吸入劑</div>
+        <div class="bullet-sublist" style="margin-bottom: 0.75rem;">
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text">5 mg/dose (20 doses/BT)</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text">5 歲以上(含成人)：每日二次，每次二個劑量(10 毫克)，連續五天</div>
+          </div>
+        </div>
+
+        <div style="font-weight: 700; color: var(--primary-dark); font-size: 1rem; margin-bottom: 0.4rem;">
+          ◆ Baloxavir
+        </div>
+        <div style="font-weight: 600; color: #495057;">◆ Xofluza</div>
+        <div class="bullet-sublist" style="margin-bottom: 0.75rem;">
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text">單次口服 (不必第二劑)</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text">體重≧80 公斤：80 mg</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text">≥12 歲，40~80 公斤：40 mg</div>
+          </div>
+        </div>
+
+        <div style="font-weight: 700; color: var(--primary-dark); font-size: 1rem; margin-bottom: 0.4rem;">
+          ◆ Peramivir
+        </div>
+        <div style="font-weight: 600; color: #495057;">◆ 300 mg (60 mL)/Bag</div>
+        <div class="bullet-sublist" style="margin-bottom: 0.6rem;">
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text">點滴靜脈注射 1 次，滴注 15 分鐘以上 (不必第二劑)</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text"><b>1 個月~未滿 2 歲</b>：此年齡療效及安全性資料較缺乏，須謹慎使用，由兒童感染症醫師評估用於重症流感嬰幼兒。10~12 mg/kg，最高 600 mg</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text"><b>2~18 歲</b>：10~12 mg/kg，最高 600 mg</div>
+          </div>
+          <div class="bullet-row">
+            <span class="bullet-icon-sub">•</span>
+            <div class="bullet-text"><b>≥ 18 歲</b>：300 ~ 600 mg</div>
+          </div>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">
+          資料來源：兒童流感治療建議(兒童感染症醫學會) https://www.pids.org.tw/index.php?route=news/news_detail&news_id=90
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 21. 鎮靜、止痙(一線藥) [P12] ==================== -->
+  <section class="category-section" id="cat_sedative" data-cat="cat_sedative">
+    <div class="category-title-bar">
+      <div class="category-title">💤 鎮靜、止痙(一線藥)</div>
+      <span class="category-page-tag">Page 12</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Chloral Hydrate</div>
+            <div class="drug-name-secondary">鎮靜用途 (僅供口服)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            0.66~1 mL/kg (兩倍稀釋)<br>
+            &gt;1 歲：通常使用 0.5~0.6 mL/kg<br>
+            (最高劑量：1 mL/kg，總量 &lt; 20 mL)
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ketamine</div>
+            <div class="drug-name-secondary">Ketalar (鎮靜用途)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">1 mg/kg/dose 解離性麻醉，慎用</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Diazepam</div>
+            <div class="drug-name-secondary">Valium (鎮靜、止痙)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            IV: 0.06 mL (0.3 mg) /kg/dose <span style="color: #c92a2a; font-weight: 700;">不可 IM</span><br>
+            直腸給藥 0.1 mL (0.5 mg) /kg/dose
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Lorazepam</div>
+            <div class="drug-name-secondary">Ativan (鎮靜、止痙)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">0.1 mg/kg/dose IV (鎮靜 0.05 mg/kg/dose)</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Midazolam</div>
+            <div class="drug-name-secondary">Dormicum (鎮靜、止痙)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            鎮靜：0.1 mg/kg/dose IV 或 IM (最多三次)<br>
+            止痙：0.2~0.5 mg/kg/dose 最高 10 mg/dose
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="boxed-guideline" style="margin-top: 1rem;">
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">止痙藥(抗痙攣藥)，同藥隔 5 分鐘可再用一次，或換另一種交替使用。</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">註：原廠 Chloral Hydrate 可直腸給藥，台廠藥「可律靜」含糖及賦形劑，尚未作代糖及賦形劑對直腸影響之試驗，因此建議口服。</div>
+      </div>
+      <div class="bullet-row" style="margin-top: 0.35rem;">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">若用藥 20 分鐘仍持續發作，評估使用二線藥物。(請另行參閱 ICU 手冊)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 22. 預防癲癇：注射 [P12] ==================== -->
+  <section class="category-section" id="cat_seizure_inj" data-cat="cat_seizure_inj">
+    <div class="category-title-bar">
+      <div class="category-title">💉 預防癲癇：注射</div>
+      <span class="category-page-tag">Page 12</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Levetiracetam</div>
+            <div class="drug-name-secondary">Keppra 500mg/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">10 mg/kg/dose Q12H 視效果與耐受度，可漸增至 30 mg/kg/dose (最高 3000 mg/day)</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Phenobarbital</div>
+            <div class="drug-name-secondary">Phenobital 100 mg/Amp</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            首劑 Loading Dose 20 mg/kg/dose<br>
+            維持劑量 ≦五歲 3~5 mg/kg/day &gt;五歲 2~3 mg/kg/day IV Q12H
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Phenytoin</div>
+            <div class="drug-name-secondary">Dilantin 250 mg/Amp</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            首劑 20 mg/kg/dose 維持劑量 4~8 mg/kg/day IV Q12H<br>
+            宜泡在 Normal Saline，稀釋液不可含糖
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Valproic acid</div>
+            <div class="drug-name-secondary">Depakine 400 mg/Vial</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">10-15 mg/kg/day Q12H 最高 60 mg/kg/day</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-note" style="margin-top: 1rem; color: #c92a2a; font-weight: 700;">
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow" style="color: #c92a2a;">▸</span>
+        <div class="bullet-text">※需監測藥物濃度的藥：Phenobarbital、Phenytoin、Valproic acid。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 23. 預防癲癇：常用口服藥 [P13] ==================== -->
+  <section class="category-section" id="cat_seizure_oral" data-cat="cat_seizure_oral">
+    <div class="category-title-bar">
+      <div class="category-title">💊 預防癲癇：常用口服藥</div>
+      <span class="category-page-tag">Page 13</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Carbamazepine</div>
+            <div class="drug-name-secondary">Tegretol 癲通 200 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">10-20 mg/kg/day BID (先作基因檢測而後用藥)</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Levetiracetam</div>
+            <div class="drug-name-secondary">Keppra 優閒 500 mg/Tab ｜ 100 mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            10 mg/kg/dose BID <span class="fraction"><span class="num">BW</span><span class="den">10</span></span> mL/dose BID<br>
+            最高 60 mg/kg/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Oxcarbazepine</div>
+            <div class="drug-name-secondary">Trileptal 除癲達 300 mg/Tab ｜ 60 mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            初始劑量 8~10 mg/kg/day BID 成人 600 mg/day<br>
+            維持劑量 10~46 mg/kg/day BID (仿單範圍 6~51 mg/kg/day)<br>
+            成人 600~2400 mg/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Topiramate</div>
+            <div class="drug-name-secondary">Topamax 妥泰 25 mg/Tab, 100 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            第一週 1~3 mg/kg/day<br>
+            可增至 5~9 mg/kg/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Valproic acid</div>
+            <div class="drug-name-secondary">Depakine 帝拔癲錠 500 mg/Tab ｜ 帝拔癲藥水 200 mg/mL</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            初始劑量 10~15 mg/kg/day QD~TID<br>
+            維持劑量 30~60 mg/kg/day BID~TID
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-note" style="margin-top: 1rem;">
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">※僅列出常用品項，在不同類型的癲癇，劑量有不同範圍。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 24. 降腦壓 [P13] ==================== -->
+  <section class="category-section" id="cat_icp" data-cat="cat_icp">
+    <div class="category-title-bar">
+      <div class="category-title">🧠 降腦壓</div>
+      <span class="category-page-tag">Page 13</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Hypertonic Saline (3%)</div>
+            <div class="drug-name-secondary">需使用中央靜脈導管注射</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            初始劑量 3~5 mL/kg/dose<br>
+            維持劑量 0.1~1 mL/kg/hr
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Mannitol</div>
+            <div class="drug-name-secondary">20% 輸注液</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            0.5~1 g/kg/dose (2.5~5 mL/kg) Q6H~Q8H<br>
+            (UpToDate 範圍 0.25~1 g/kg/dose)
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 25. 利尿劑 [P13] ==================== -->
+  <section class="category-section" id="cat_diuretic" data-cat="cat_diuretic">
+    <div class="category-title-bar">
+      <div class="category-title">💧 利尿劑</div>
+      <span class="category-page-tag">Page 13</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Furosemide</div>
+            <div class="drug-name-secondary">福滿 10 mg/mL ｜ Furide 40 mg/Tab ｜ Lasix 20 mg/2 mL/Amp (環利尿劑)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            水劑 <span class="fraction"><span class="num">BW</span><span class="den">10</span></span> mL QID<br>
+            <span class="fraction"><span class="num">BW</span><span class="den">40</span></span> 顆 QID<br>
+            靜脈注射 1 mg/kg/dose Q6H
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Spironolactone</div>
+            <div class="drug-name-secondary">Aldactone 25 mg/Tab (保鉀利尿劑)</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">
+            1~3 mg/kg/day 成人 25~100 mg/day<br>
+            BID~QID 最高 200 mg/day
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Trichlormethiazide</div>
+            <div class="drug-name-secondary">Fluitran 2 mg/Tab</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">≧六個月：0.07 mg/kg/day Q12H~QD</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 26. 耳滴劑 [P14] ==================== -->
+  <section class="category-section" id="cat_eardrop" data-cat="cat_eardrop">
+    <div class="category-title-bar">
+      <div class="category-title">👂 耳滴劑</div>
+      <span class="category-page-tag">Page 14</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ofloxacin</div>
+            <div class="drug-name-secondary">Tarivid</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">中耳炎、外耳炎：6~8 滴 TID~QID 具止痛效果</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Mycomb</div>
+            <div class="drug-name-secondary">美康</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">一般劑量</span>
+          <div class="dose-formula-content">外耳炎、黴菌感染：2~3 滴 TID~QID</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 27. 噴鼻劑 [P14] ==================== -->
+  <section class="category-section" id="cat_nasal" data-cat="cat_nasal">
+    <div class="category-title-bar">
+      <div class="category-title">👃 噴鼻劑</div>
+      <span class="category-page-tag">Page 14</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Budesonide</div>
+            <div class="drug-name-secondary">Pulmicort 態舒鼻</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">說明</span>
+          <div class="dose-formula-content">≧6 歲：每日早晨，左右鼻孔各噴 2 次</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Fluticasone furoate</div>
+            <div class="drug-name-secondary">Avamys 艾敏釋</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">說明</span>
+          <div class="dose-formula-content">
+            適用於季節變化期的過敏鼻炎<br>
+            2~12 歲：一日雙側各噴一下<br>
+            ≧12 歲：一日雙側各噴兩下，緩解減量
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Oxymetazoline</div>
+            <div class="drug-name-secondary">Sindecon 醫鼻易</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">說明</span>
+          <div class="dose-formula-content">鼻塞：早晚雙側各噴 2~3 下</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Triamcinolone acetonide</div>
+            <div class="drug-name-secondary">Nasacort 拿塞可得</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">說明</span>
+          <div class="dose-formula-content">
+            預防氣喘、季節鼻炎<br>
+            6~12 歲：一日雙側各噴一下
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 28. 口腔外用藥 [P14] ==================== -->
+  <section class="category-section" id="cat_oral_ext" data-cat="cat_oral_ext">
+    <div class="category-title-bar">
+      <div class="category-title">👄 口腔外用藥</div>
+      <span class="category-page-tag">Page 14</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Benzydamine</div>
+            <div class="drug-name-secondary">Difflam</div>
+          </div>
+          <span class="fee-badge">自費 NT$380</span>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">咽峽炎止痛 TID~QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Dexamethasone</div>
+            <div class="drug-name-secondary">Dexa 得舒口內膠</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">用於口舌潰瘍 TID~QID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Triamcinolone</div>
+            <div class="drug-name-secondary">Nincort 寧康口內膠</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">用於口舌潰瘍 TID~QID</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 29. 皮膚外用藥 [P14] ==================== -->
+  <section class="category-section" id="cat_skin_ext" data-cat="cat_skin_ext">
+    <div class="category-title-bar">
+      <div class="category-title">🧴 皮膚外用藥</div>
+      <span class="category-page-tag">Page 14</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Mycomb</div>
+            <div class="drug-name-secondary">美康乳膏</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">尿布疹 BID~TID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Zinc Oxide (ZnO)</div>
+            <div class="drug-name-secondary">氧化鋅</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">尿布疹皮膚潰爛者 (此藥乾燥收斂，不宜久用)</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Mometasone</div>
+            <div class="drug-name-secondary">Elisone 安膚樂</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">皮膚炎，止癢</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Triamcinolone Acetonide</div>
+            <div class="drug-name-secondary">Encort-A 安克</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">溼疹</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Hydrocortisone</div>
+            <div class="drug-name-secondary">吉舒</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">輕度皮膚炎(癢疹) BID~TID</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">C.B. ointment</div>
+            <div class="drug-name-secondary">強力施美藥膏</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">皮膚搔癢症、昆蟲刺螫症、急慢性蕁麻疹</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Sinbaby</div>
+            <div class="drug-name-secondary">金貝比嬰兒洗劑</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">止癢：例如蕁麻疹、水痘</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Ketoconazole</div>
+            <div class="drug-name-secondary">Zumelin</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">抗黴菌藥：癬、脂漏性皮膚炎、表皮黴菌感染</div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="card-header-row">
+          <div>
+            <div class="drug-name-primary">Neomycin Sulfate</div>
+            <div class="drug-name-secondary">Spersin 使皮新軟膏</div>
+          </div>
+        </div>
+        <div class="dose-formula-box">
+          <span class="dose-formula-label">主要用途</span>
+          <div class="dose-formula-content">預防及緩解皮膚刀傷、刮傷、燙傷之感染</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-note" style="margin-top: 1rem;">
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">Mycomb 成分：Triamcinolone acetonide, Neomycin, Gramicidin, Nystatin</div>
+      </div>
+      <div class="bullet-row">
+        <span class="bullet-icon-arrow">▸</span>
+        <div class="bullet-text">Spersin 成分： Neomycin Sulfate, Bacitracin Zinc, Polymyxin B sulfate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 30. 參考表格 [P15-16] ==================== -->
+  <!-- ETT -->
+  <section class="category-section" id="cat_ett" data-cat="cat_ett">
+    <div class="category-title-bar">
+      <div class="category-title">📐 Endotracheal Tube 氣管內管</div>
+      <span class="category-page-tag">Page 15</span>
+    </div>
+
+    <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem;">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th>年齡</th>
+            <th>體重 (kg)</th>
+            <th>內徑 (mm)</th>
+            <th>固定深度 (cm)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>~1</td><td>~1</td><td>2 ～ 2.5</td><td>7</td></tr>
+          <tr><td>~1</td><td>2</td><td>2.5</td><td>8</td></tr>
+          <tr><td>~1</td><td>3</td><td>2.5 ～ 3</td><td>9</td></tr>
+          <tr><td>2 m</td><td>5</td><td>3</td><td>10</td></tr>
+          <tr><td>6 m</td><td>7.5</td><td>3 ～ 3.5</td><td>12</td></tr>
+          <tr><td>1</td><td>10</td><td>4</td><td>12</td></tr>
+          <tr><td>3.5</td><td>15</td><td>4.5 ～ 5</td><td>13 ～ 14</td></tr>
+          <tr><td>6</td><td>20</td><td>5.5</td><td>15</td></tr>
+          <tr><td>10</td><td>30</td><td>6 ～ 6.5</td><td>16 ～ 17</td></tr>
+          <tr><td>13</td><td>40</td><td>7 ～ 7.5</td><td>18</td></tr>
+          <tr><td>14</td><td>50</td><td>8</td><td>18 ～ 21</td></tr>
+          <tr style="background: #f1f3f5; font-weight: 700;">
+            <td colspan="2" class="text-center">公式</td>
+            <td class="text-center">4 + Age/4</td>
+            <td class="text-center">12 + Age/2</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="card-note">
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">◆</span>
+          <div class="bullet-text">Croup 的病童，呼吸道腫脹</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">◆</span>
+          <div class="bullet-text">ET 內徑要減 0.5 mm</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 心搏速率 -->
+  <section class="category-section" id="cat_hr" data-cat="cat_hr">
+    <div class="category-title-bar">
+      <div class="category-title">💓 心搏速率的參考範圍</div>
+      <span class="category-page-tag">Page 15</span>
+    </div>
+
+    <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem;">
+      <table class="clean-table">
+        <thead>
+          <tr><th>年齡</th><th>下限</th><th>平均</th><th>上限</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>新生兒</td><td>100</td><td><b>125</b></td><td>180</td></tr>
+          <tr><td>1~11 月</td><td>80</td><td>120</td><td>160</td></tr>
+          <tr><td>2 歲</td><td>80</td><td>110</td><td>130</td></tr>
+          <tr><td>4 歲</td><td>80</td><td>100</td><td>120</td></tr>
+          <tr><td>6 歲</td><td>75</td><td>100</td><td>115</td></tr>
+          <tr><td>8 歲</td><td>70</td><td><b>90</b></td><td>110</td></tr>
+          <tr><td>10 歲</td><td>70</td><td><b>90</b></td><td>110</td></tr>
+        </tbody>
+      </table>
+
+      <table class="clean-table" style="margin-top: 0.75rem;">
+        <thead>
+          <tr>
+            <th rowspan="2">年齡</th>
+            <th colspan="2">下限</th>
+            <th colspan="2">平均</th>
+            <th colspan="2">上限</th>
+          </tr>
+          <tr><th>男</th><th>女</th><th>男</th><th>女</th><th>男</th><th>女</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>12 歲</td><td>65</td><td>70</td><td><b>85</b></td><td><b>90</b></td><td>105</td><td>110</td></tr>
+          <tr><td>14 歲</td><td>60</td><td>65</td><td>80</td><td>85</td><td>100</td><td>105</td></tr>
+          <tr><td>16 歲</td><td>55</td><td>60</td><td><b>75</b></td><td><b>80</b></td><td>95</td><td>100</td></tr>
+          <tr><td>18 歲</td><td>50</td><td>55</td><td>70</td><td>75</td><td>90</td><td>95</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card-note">
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">◆</span>
+          <div class="bullet-text">發燒時，體溫每上升 1 度 C，脈搏率約略增加 10 次。</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">◆</span>
+          <div class="bullet-text">哭鬧、疼痛時，脈搏偏快，等安靜休息時重新量測。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 高血壓 -->
+  <section class="category-section" id="cat_htn" data-cat="cat_htn">
+    <div class="category-title-bar">
+      <div class="category-title">🩸 高血壓的參考範圍</div>
+      <span class="category-page-tag">Page 15</span>
+    </div>
+
+    <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem;">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th>年齡</th>
+            <th>正常但偏高<br>90~94 百分位</th>
+            <th>明顯高血壓<br>95~99 百分位</th>
+            <th>嚴重高血壓<br>≧99 百分位</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>新生兒 7 天以內 SBP</td><td>無資料</td><td>96~105</td><td>≧106</td></tr>
+          <tr><td>8~30 天 SBP</td><td>無資料</td><td>104~109</td><td>≧110</td></tr>
+          <tr><td>小於 2 歲 SBP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DBP</td><td>104~111<br>70~73</td><td>112~117<br>74~81</td><td>≧118<br>≧82</td></tr>
+          <tr><td>3~5 歲 SBP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DBP</td><td>108~115<br>70~75</td><td>116~123<br>76~83</td><td>≧124<br>≧84</td></tr>
+          <tr><td>6~9 歲 SBP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DBP</td><td>114~121<br>74~77</td><td>122~129<br>78~85</td><td>≧130<br>≧86</td></tr>
+          <tr><td>10~12 歲 SBP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DBP</td><td>122~125<br>78~81</td><td>126~133<br>82~89</td><td>≧134<br>≧90</td></tr>
+          <tr><td>13~15 歲 SBP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DBP</td><td>130~135<br>80~85</td><td>136~143<br>86~91</td><td>≧144<br>≧92</td></tr>
+          <tr><td>16~18 歲 SBP<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DBP</td><td>136~141<br>84~91</td><td>142~149<br>92~97</td><td>≧150<br>≧98</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 低血壓簡易評估 -->
+  <section class="category-section" id="cat_hypotension" data-cat="cat_hypotension">
+    <div class="category-title-bar">
+      <div class="category-title">📉 低血壓的簡易評估</div>
+      <span class="category-page-tag">Page 15</span>
+    </div>
+
+    <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem;">
+      <div style="font-size: 1.15rem; font-weight: 700; color: #c92a2a;">
+        ◆ 可接受的最低收縮壓 = 70 + 2 x 年齡
+      </div>
+    </div>
+  </section>
+
+  <!-- 昏迷指數 GCS -->
+  <section class="category-section" id="cat_gcs" data-cat="cat_gcs">
+    <div class="category-title-bar">
+      <div class="category-title">🧠 昏迷指數 GCS (Glasgow Coma Scale)</div>
+      <span class="category-page-tag">Page 16</span>
+    </div>
+
+    <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem;">
+      <div class="card-note" style="margin-bottom: 0.75rem;">
+        <b>Eye: 簡記 AVPU 4321</b><br>
+        A: Alert ｜ V: Voice ｜ P: Pain ｜ U: Unresponsive
+      </div>
+
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th style="width: 35%;">&lt; 4 yr</th>
+            <th style="width: 30%;">分數</th>
+            <th style="width: 35%;">&gt; 4 yr</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>眼睛自開</td><td class="text-center"><b>E4 (A)</b></td><td>眼睛自開</td></tr>
+          <tr><td>聽聲張眼</td><td class="text-center"><b>E3 (V)</b></td><td>從令張眼</td></tr>
+          <tr><td>痛而張眼</td><td class="text-center"><b>E2 (P)</b></td><td>痛而張眼</td></tr>
+          <tr><td>無反應</td><td class="text-center"><b>E1 (U)</b></td><td>無反應</td></tr>
+
+          <tr style="border-top: 2px solid #212529;"><td>笑，互動良好</td><td class="text-center"><b>V5</b></td><td>正常對答</td></tr>
+          <tr><td>哭，安撫可靜</td><td class="text-center"><b>V4</b></td><td>混淆內容</td></tr>
+          <tr><td>痛而哭鬧</td><td class="text-center"><b>V3</b></td><td>用字不當</td></tr>
+          <tr><td>痛而呻吟</td><td class="text-center"><b>V2</b></td><td>無義聲音</td></tr>
+          <tr><td>無反應</td><td class="text-center"><b>V1</b></td><td>無反應</td></tr>
+
+          <tr style="border-top: 2px solid #212529;"><td>服從指令</td><td class="text-center"><b>M6</b></td><td>服從指令</td></tr>
+          <tr><td>定位痛點</td><td class="text-center"><b>M5</b></td><td>定位痛點</td></tr>
+          <tr><td>痛而縮回</td><td class="text-center"><b>M4</b></td><td>痛而縮回</td></tr>
+          <tr><td>異常彎曲</td><td class="text-center"><b>M3 去皮質</b></td><td>異常彎曲</td></tr>
+          <tr><td>異常伸開</td><td class="text-center"><b>M2 去大腦</b></td><td>異常伸開</td></tr>
+          <tr><td>無反應</td><td class="text-center"><b>M1</b></td><td>無反應</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card-note" style="margin-top: 0.75rem; line-height: 1.6;">
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text">GCS 滿分 15 (完全清醒 E4V5M6)，最低 3 分 (深度昏迷 E1V1M1)，(2e 或 2t 通常可能當作 3 分)</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text"><b>Ve</b>：因 endotracheal intubation 而不能講話，拔管後，可重新評估。</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text">Ve 也有人寫 Vt (此處 t 代表 tube)</div>
+        </div>
+        <div class="bullet-row">
+          <span class="bullet-icon-arrow">▸</span>
+          <div class="bullet-text"><b>Vt</b>：因 tracheostomy 不能講話，不確定語言表達能力。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<button class="back-top" id="backTopBtn" title="回到頂端">▲</button>
+
+<div id="toastNotification"></div>
+
+<script>
+// ========================================================
+// 兒童常用藥品簡表：全功能增強核心腳本 (零更動原文字)
+// 包含：PWA離線支援、護眼夜間模式、體重動態計算、星號收藏、處方複製、跳轉檢索
+// ========================================================
+document.addEventListener("DOMContentLoaded", function () {
+  // 徹底清除 Netlify 抽屜與浮水印 DOM 元素 (動態監聽即時銷毀)
+  const removeNetlifyElements = () => {
+    const targets = document.querySelectorAll('#netlify-drawer, .netlify-drawer, netlify-drawer, [data-netlify-drawer], [data-testid="drawer"], #netlify-badge, .netlify-badge, iframe[src*="netlify"], iframe[src*="_drawer"]');
+    targets.forEach(el => el.remove());
+  };
+  removeNetlifyElements();
+  try {
+    const netlifyObserver = new MutationObserver(removeNetlifyElements);
+    netlifyObserver.observe(document.documentElement, { childList: true, subtree: true });
+  } catch (e) {}
+
+  // 1. PWA 離線 Service Worker 註冊 (更新時自動啟用最新快取)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      reg.update();
+    }).catch(function () {});
+  }
+
+  // 2. DOM 元素快取
+  const categorySelect = document.getElementById("categorySelect");
+  const searchInput = document.getElementById("searchInput");
+  const clearSearchBtn = document.getElementById("clearSearch");
+  const solidClearBtn = document.getElementById("solidClearBtn");
+  const statBadge = document.getElementById("statBadge");
+  const introBanner = document.getElementById("introBanner");
+  const backTopBtn = document.getElementById("backTopBtn");
+  const contentContainer = document.getElementById("contentContainer");
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const printBtn = document.getElementById("printBtn");
+  const weightInput = document.getElementById("weightInput");
+  const clearWeightBtn = document.getElementById("clearWeightBtn");
+  const weightChips = document.querySelectorAll(".weight-chip");
+
+  // 3. 護眼夜間模式 (Dark Mode)
+  const savedTheme = localStorage.getItem("ped_drugs_theme") || "light";
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      if (themeToggleBtn) themeToggleBtn.innerHTML = "☀️ 明亮模式";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      if (themeToggleBtn) themeToggleBtn.innerHTML = "🌙 護眼模式";
+    }
+    localStorage.setItem("ped_drugs_theme", theme);
+  }
+  applyTheme(savedTheme);
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", function () {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      applyTheme(isDark ? "light" : "dark");
+    });
+  }
+
+  if (printBtn) {
+    printBtn.addEventListener("click", function () {
+      window.print();
+    });
+  }
+
+  // 4. 常用藥品收藏庫 (LocalStorage)
+  let favorites = new Set();
+  try {
+    const rawFav = localStorage.getItem("ped_drugs_favorites");
+    if (rawFav) favorites = new Set(JSON.parse(rawFav));
+  } catch (e) {}
+
+  function saveFavorites() {
+    try {
+      localStorage.setItem("ped_drugs_favorites", JSON.stringify(Array.from(favorites)));
+    } catch (e) {}
+    updateFavOptionLabel();
+  }
+
+  function updateFavOptionLabel() {
+    const opt = categorySelect.querySelector('option[value="cat_favorites"]');
+    if (opt) {
+      opt.textContent = `⭐ 我的常用藥品清單 (${favorites.size})`;
+    }
+  }
+  updateFavOptionLabel();
+
+  // 5. Toast 訊息提示
+  function showToast(text) {
+    let toast = document.getElementById("toastNotification");
+    if (!toast) return;
+    toast.textContent = text;
+    toast.classList.add("show");
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(function () {
+      toast.classList.remove("show");
+    }, 2000);
+  }
+
+  // 6. 卡片唯一鍵值產生器
+  function getCardKey(card) {
+    const pri = card.querySelector(".drug-name-primary")?.textContent.trim() || "";
+    const sec = card.querySelector(".drug-name-secondary")?.textContent.trim() || "";
+    return pri + "::" + sec;
+  }
+
+  // 7. 體重劑量動態計算邏輯 (升級版：支援範圍劑量與雙重劑型同時計算)
+  let currentWeight = 0;
+
+  function calculateCardDose(card, weight) {
+    if (!weight || weight <= 0) return null;
+    const formulaBox = card.querySelector(".dose-formula-box");
+    if (!formulaBox) return null;
+
+    // 將 HTML 中的分數標籤標準化為文字格式 "BW/den"
+    let html = formulaBox.innerHTML || "";
+    html = html.replace(/<span[^>]*class=["']fraction["'][^>]*>\s*<span[^>]*class=["']num["'][^>]*>([^<]+)<\/span>\s*<span[^>]*class=["']den["'][^>]*>([^<]+)<\/span>\s*<\/span>/gi, "$1/$2");
+    html = html.replace(/<br\s*[\/]?>/gi, "\n");
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    const normText = tempDiv.textContent || "";
+
+    const lines = normText.split("\n").map(l => l.trim()).filter(Boolean);
+    const results = [];
+
+    lines.forEach(line => {
+      // 1. 範圍公式檢查 (如 BW/4 ～ BW/2 mL)
+      const rangeMatch = line.match(/BW\s*[\/÷]\s*([\d\.]+)\s*[～~至\-]\s*BW\s*[\/÷]\s*([\d\.]+)/i);
+      if (rangeMatch) {
+        const d1 = parseFloat(rangeMatch[1]);
+        const d2 = parseFloat(rangeMatch[2]);
+        if (!isNaN(d1) && !isNaN(d2) && d1 > 0 && d2 > 0) {
+          const v1 = (weight / d1).toFixed(1);
+          const v2 = (weight / d2).toFixed(1);
+          results.push(`${v1} ～ ${v2} mL`);
+          return;
+        }
+      }
+
+      // 2. 單一分數公式檢查 (如 BW/4 mL, BW/40 顆, BW/12.5)
+      const singleMatch = line.match(/BW\s*[\/÷]\s*([\d\.]+)/i);
+      if (singleMatch) {
+        const den = parseFloat(singleMatch[1]);
+        if (!isNaN(den) && den > 0) {
+          const val = weight / den;
+          let label = "";
+          if (line.includes("藥水")) label = "藥水 ";
+          else if (line.includes("錠劑") || line.includes("藥錠")) label = "錠劑 ";
+          else if (line.includes("粉劑") || line.includes("顆粒") || line.includes("包")) label = "粉劑/包 ";
+          else if (line.includes("栓劑") || line.includes("塞劑")) label = "塞劑 ";
+
+          if (line.includes("mL") || line.includes("ml")) {
+            results.push(`${label}${val.toFixed(1)} mL`);
+          } else if (line.includes("顆") || line.includes("包") || line.includes("Tab") || line.includes("Cap") || den === 40 || den === 12.5) {
+            let unit = line.includes("包") ? "包" : "顆";
+            if (line.includes("最高 1 顆") || line.includes("最高 1 包") || den === 40 || den === 12.5) {
+              if (val >= 1) {
+                results.push(`${label}1 ${unit} (已達上限)`);
+                return;
+              }
+            }
+            results.push(`${label}${val.toFixed(2)} ${unit}`);
+          } else {
+            results.push(`${label}${val.toFixed(1)} mL`);
+          }
+          return;
+        }
+      }
+
+      // 3. mg/kg/day 劑量區間
+      const mgRangeMatch = line.match(/([\d\.]+)\s*[～~至\-]\s*([\d\.]+)\s*mg\/kg/i);
+      if (mgRangeMatch) {
+        const minVal = Math.round(parseFloat(mgRangeMatch[1]) * weight);
+        const maxVal = Math.round(parseFloat(mgRangeMatch[2]) * weight);
+        results.push(`${minVal} ～ ${maxVal} mg`);
+        return;
+      }
+
+      // 4. 單一 mg/kg
+      const mgMatch = line.match(/([\d\.]+)\s*mg\/kg/i);
+      if (mgMatch) {
+        const val = Math.round(parseFloat(mgMatch[1]) * weight);
+        results.push(`${val} mg`);
+      }
+    });
+
+    if (results.length > 0) {
+      return results.join(" ｜ ");
+    }
+    return null;
+  }
+
+  // 8. 裝飾卡片（添加收藏★、複製📋、及動態計算結果標籤）
+  function decorateCard(card) {
+    const key = getCardKey(card);
+    card.dataset.cardKey = key;
+
+    // 添加操作按鈕
+    const headerRow = card.querySelector(".card-header-row");
+    if (headerRow && !headerRow.querySelector(".card-actions")) {
+      const actions = document.createElement("div");
+      actions.className = "card-actions";
+
+      const isFav = favorites.has(key);
+      actions.innerHTML = `
+        <button class="card-action-btn fav-btn ${isFav ? 'is-fav' : ''}" title="${isFav ? '移出常用藥品' : '加入常用藥品'}" aria-label="收藏">★</button>
+        <button class="card-action-btn copy-btn" title="複製此藥品處方用法" aria-label="複製">📋</button>
+      `;
+      headerRow.appendChild(actions);
+    }
+
+    // 處理動態劑量計算標籤
+    const oldPill = card.querySelector(".dose-calc-pill");
+    const calcResult = calculateCardDose(card, currentWeight);
+    if (calcResult) {
+      if (oldPill) {
+        oldPill.innerHTML = `<span>👶 體重 <strong>${currentWeight} kg</strong> 建議：<strong>${calcResult}</strong></span>`;
+      } else {
+        const pill = document.createElement("div");
+        pill.className = "dose-calc-pill";
+        pill.innerHTML = `<span>👶 體重 <strong>${currentWeight} kg</strong> 建議：<strong>${calcResult}</strong></span>`;
+        const formulaBox = card.querySelector(".dose-formula-box");
+        if (formulaBox) {
+          formulaBox.parentNode.insertBefore(pill, formulaBox.nextSibling);
+        } else {
+          card.appendChild(pill);
+        }
+      }
+    } else if (oldPill) {
+      oldPill.remove();
+    }
+  }
+
+  function decorateAllCards() {
+    document.querySelectorAll(".item-card").forEach(decorateCard);
+  }
+
+  // 9. 事件委託：收藏 ★ 與 複製 📋
+  contentContainer.addEventListener("click", function (e) {
+    // 收藏點擊
+    const favBtn = e.target.closest(".fav-btn");
+    if (favBtn) {
+      e.stopPropagation();
+      const card = favBtn.closest(".item-card");
+      if (!card) return;
+      const key = card.dataset.cardKey;
+      if (!key) return;
+
+      if (favorites.has(key)) {
+        favorites.delete(key);
+        favBtn.classList.remove("is-fav");
+        favBtn.title = "加入常用藥品";
+        showToast("已從常用藥品移除");
+      } else {
+        favorites.add(key);
+        favBtn.classList.add("is-fav");
+        favBtn.title = "移出常用藥品";
+        showToast("已加入「⭐ 我的常用藥品」！");
+      }
+      saveFavorites();
+
+      if (categorySelect.value === "cat_favorites") {
+        updateView(false);
+      }
+      return;
+    }
+
+    // 複製點擊
+    const copyBtn = e.target.closest(".copy-btn");
+    if (copyBtn) {
+      e.stopPropagation();
+      const card = copyBtn.closest(".item-card");
+      if (!card) return;
+
+      const pri = card.querySelector(".drug-name-primary")?.textContent.trim() || "";
+      const sec = card.querySelector(".drug-name-secondary")?.textContent.trim() || "";
+      const formula = card.querySelector(".dose-formula-content")?.textContent.replace(/\s+/g, " ").trim() || "";
+      const note = card.querySelector(".card-note")?.textContent.replace(/\s+/g, " ").trim() || "";
+      const calcPill = card.querySelector(".dose-calc-pill")?.textContent.replace(/\s+/g, " ").trim() || "";
+
+      let textToCopy = `【${pri}】`;
+      if (sec) textToCopy += ` ${sec}`;
+      if (formula) textToCopy += `\n• 劑量用法: ${formula}`;
+      if (calcPill) textToCopy += `\n• ${calcPill}`;
+      if (note) textToCopy += `\n• 備註說明: ${note}`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy).then(function () {
+          showToast(`已複製「${pri}」處方內容！`);
+        }).catch(function () {
+          fallbackCopyText(textToCopy, pri);
+        });
+      } else {
+        fallbackCopyText(textToCopy, pri);
+      }
+    }
+  });
+
+  function fallbackCopyText(text, name) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showToast(`已複製「${name}」處方內容！`);
+    } catch (e) {
+      showToast("複製失敗，請手動複製");
+    }
+    document.body.removeChild(ta);
+  }
+
+  // 10. 體重輸入與預設按鈕監聽
+  function handleWeightChange(val) {
+    const num = parseFloat(val);
+    currentWeight = (!isNaN(num) && num > 0) ? num : 0;
+    decorateAllCards();
+
+    // 更新晶片選取狀態
+    weightChips.forEach(chip => {
+      if (parseFloat(chip.dataset.weight) === currentWeight) {
+        chip.classList.add("active");
+      } else {
+        chip.classList.remove("active");
+      }
+    });
+  }
+
+  weightInput.addEventListener("input", function () {
+    handleWeightChange(this.value);
+  });
+
+  clearWeightBtn.addEventListener("click", function () {
+    weightInput.value = "";
+    handleWeightChange(0);
+    weightInput.focus();
+  });
+
+  weightChips.forEach(chip => {
+    chip.addEventListener("click", function () {
+      const w = parseFloat(this.dataset.weight);
+      weightInput.value = w;
+      handleWeightChange(w);
+    });
+  });
+
+  // 11. 備份原始段落 HTML 供高亮無痕還原
+  const sections = Array.from(document.querySelectorAll(".category-section"));
+  const originalSectionMap = new Map();
+  sections.forEach(sec => {
+    originalSectionMap.set(sec.id, sec.innerHTML);
+  });
+  const originalBannerHtml = introBanner.innerHTML;
+
+  // 記錄當前所有命中項目的 DOM 元素
+  let matchedElements = [];
+  let currentMatchIndex = -1;
+
+  function updateView(autoScrollToFirst = true) {
+    const selectedCat = categorySelect.value;
+    const query = searchInput.value.trim();
+    clearSearchBtn.style.display = query ? "block" : "none";
+
+    // 移除之前的空常用藥提示
+    const oldEmpty = document.getElementById("emptyFavMsg");
+    if (oldEmpty) oldEmpty.remove();
+
+    // 1. 還原所有段落原始 HTML
+    sections.forEach(sec => {
+      sec.innerHTML = originalSectionMap.get(sec.id);
+    });
+    introBanner.innerHTML = originalBannerHtml;
+
+    // 重新裝飾還原後的卡片 (綁定收藏與計算劑量)
+    decorateAllCards();
+
+    matchedElements = [];
+    currentMatchIndex = -1;
+
+    const hasQuery = query.length > 0;
+    const reg = hasQuery ? new RegExp(`(${escapeRegExp(query)})`, "gi") : null;
+
+    let totalMatches = 0;
+    let visibleSectionCount = 0;
+
+    // 處理「⭐ 我的常用藥品清單」模式
+    if (selectedCat === "cat_favorites") {
+      introBanner.classList.add("hidden-block");
+      let visibleFavCards = 0;
+
+      sections.forEach(sec => {
+        const cards = Array.from(sec.querySelectorAll(".item-card"));
+        let secHasFav = false;
+
+        cards.forEach(card => {
+          const key = card.dataset.cardKey;
+          const isFav = favorites.has(key);
+
+          if (isFav) {
+            if (hasQuery) {
+              const text = card.textContent || "";
+              const m = (text.match(reg) || []).length;
+              if (m > 0) {
+                totalMatches += m;
+                secHasFav = true;
+                visibleFavCards++;
+                card.style.display = "";
+                matchedElements.push(card);
+                highlightNodeText(card, reg);
+              } else {
+                card.style.display = "none";
+              }
+            } else {
+              secHasFav = true;
+              visibleFavCards++;
+              card.style.display = "";
+            }
+          } else {
+            card.style.display = "none";
+          }
+        });
+
+        // 隱藏非藥品卡片的指引框/表格
+        sec.querySelectorAll(".boxed-guideline, .clean-table").forEach(el => el.style.display = "none");
+
+        if (secHasFav) {
+          visibleSectionCount++;
+          sec.classList.remove("hidden-block");
+        } else {
+          sec.classList.add("hidden-block");
+        }
+      });
+
+      if (favorites.size === 0) {
+        const hint = document.createElement("div");
+        hint.id = "emptyFavMsg";
+        hint.className = "empty-fav-hint";
+        hint.innerHTML = `
+          <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">⭐</div>
+          <strong>目前尚未收藏任何常用藥品</strong><br>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">
+            請至全部分類或搜尋藥品，點擊每張藥卡右上角的「★」按鈕，即可將經常開立的藥品固定收納於此！
+          </span>
+        `;
+        contentContainer.insertBefore(hint, contentContainer.firstChild);
+        statBadge.innerText = "⭐ 常用藥品：0 項";
+      } else {
+        statBadge.innerText = `⭐ 常用藥品：共 ${visibleFavCards} 項${hasQuery ? ` (搜尋相符 ${totalMatches} 處)` : ""}`;
+      }
+
+    } else {
+      // 處理首頁前言橫幅 (依使用者指示永久隱藏)
+      introBanner.classList.add("hidden-block");
+
+      // 處理各分類章節
+      sections.forEach(sec => {
+        const matchCat = (selectedCat === "all" || sec.id === selectedCat);
+        if (!matchCat) {
+          sec.classList.add("hidden-block");
+          return;
+        }
+
+        // 還原卡片顯示
+        sec.querySelectorAll(".item-card, .boxed-guideline, .clean-table").forEach(el => el.style.display = "");
+
+        if (hasQuery) {
+          const text = sec.textContent || "";
+          const m = (text.match(reg) || []).length;
+          if (m > 0) {
+            totalMatches += m;
+            visibleSectionCount++;
+            sec.classList.remove("hidden-block");
+            highlightNodeText(sec, reg);
+
+            // 抓取章節內命中的卡片或區塊
+            const cards = sec.querySelectorAll(".item-card, .clean-table, .boxed-guideline");
+            let foundSpecificCard = false;
+            cards.forEach(card => {
+              if (reg.test(card.textContent || "")) {
+                matchedElements.push(card);
+                foundSpecificCard = true;
+              }
+            });
+            if (!foundSpecificCard) {
+              matchedElements.push(sec);
+            }
+          } else {
+            sec.classList.add("hidden-block");
+          }
+        } else {
+          visibleSectionCount++;
+          sec.classList.remove("hidden-block");
+        }
+      });
+
+      if (!hasQuery) {
+        if (selectedCat !== "all") {
+          const catText = categorySelect.options[categorySelect.selectedIndex].text;
+          statBadge.innerText = `目前分類：${catText}`;
+        } else {
+          statBadge.innerText = `顯示：全部 22 類 + 5 表格`;
+        }
+      }
+    }
+
+    // 更新狀態徽章 (就地篩選，零跳動、零亂跑，保持畫面極度平穩)
+    if (hasQuery) {
+      statBadge.innerText = totalMatches > 0
+        ? `找到 ${totalMatches} 處相符 (涵蓋 ${visibleSectionCount} 類)`
+        : `未找到符合 "${query}" 的藥品項目`;
+    }
+  }
+
+  function resetSearch() {
+    searchInput.value = "";
+    updateView(false);
+    searchInput.focus();
+    if (categorySelect.value === "all") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  // 純文字節點替換高亮
+  function highlightNodeText(node, reg) {
+    if (node.nodeType === 3) {
+      const val = node.nodeValue;
+      if (reg.test(val)) {
+        const span = document.createElement("span");
+        span.innerHTML = val.replace(reg, '<mark class="highlight">$1</mark>');
+        node.parentNode.replaceChild(span, node);
+      }
+    } else if (node.nodeType === 1 && node.childNodes && !/(script|style|button)/i.test(node.tagName)) {
+      Array.from(node.childNodes).forEach(child => highlightNodeText(child, reg));
+    }
+  }
+
+  function escapeRegExp(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  // 事件監聽 (iPhone / Android 雙平台穩定化)
+  categorySelect.addEventListener("change", function () {
+    updateView(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  searchInput.addEventListener("input", function () {
+    updateView(false);
+  });
+
+  // 按完成或 Enter 時自然收合手機虛擬鍵盤，不強制跳轉或扯破畫面
+  searchInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      searchInput.blur();
+    }
+  });
+
+  // 手機鍵盤收起時保護視口座標正常歸位
+  searchInput.addEventListener("blur", function () {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
+
+  clearSearchBtn.addEventListener("click", resetSearch);
+  solidClearBtn.addEventListener("click", resetSearch);
+
+  // 回到頂部按鈕
+  window.addEventListener("scroll", function () {
+    if (window.scrollY > 300) {
+      backTopBtn.style.display = "flex";
+    } else {
+      backTopBtn.style.display = "none";
+    }
+  });
+
+  backTopBtn.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // 初次執行卡片裝飾初始化
+  decorateAllCards();
+});
+</script>
+</body>
+</html>
+

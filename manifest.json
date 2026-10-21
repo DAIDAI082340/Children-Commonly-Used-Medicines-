@@ -1,0 +1,17 @@
+{
+  "name": "兒童常用藥品簡表與計算系統",
+  "short_name": "兒科藥品簡表",
+  "description": "兒童常用藥品簡表、臨床參考表格與體重劑量換算系統",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
